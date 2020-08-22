@@ -12,24 +12,22 @@
         </jdbcConnection>
 
         <javaModelGenerator targetPackage="com.github.kb.wxshop.generate" targetProject="src/main/java">
-            <property name="enableSubPackages" value="true" />
-            <property name="trimStrings" value="true" />
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="src/main/resources">
-            <property name="enableSubPackages" value="true" />
+        <sqlMapGenerator targetPackage="db.mybatis" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.kb.wxshop.generate"  targetProject="src/main/java">
-            <property name="enableSubPackages" value="true" />
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.kb.wxshop.generate"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="wxshop" tableName="USER" domainObjectName="User" >
+        <table schema="wxshop" tableName="USER" domainObjectName="User">
             <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
-            <columnOverride column="AVATAR_URL" property="avatarUrl" />
-            <columnOverride column="CREATED_AT" jdbcType="timestamp" />
-            <columnOverride column="UPDATED_AT" jdbcType="timestamp" />
+            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
         </table>
 
     </context>

@@ -1,6 +1,8 @@
 package com.github.kb.wxshop.controller;
 
 import com.github.kb.wxshop.service.AuthService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +28,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public void login() {
-        
+    public void login(@RequestBody final TelAndCode telAndCode) {
+        final UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
+        token.setRememberMe(true);
+        SecurityUtils.getSubject().login(token);
     }
 
     public static class TelAndCode {

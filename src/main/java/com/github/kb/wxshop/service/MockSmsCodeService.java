@@ -9,6 +9,6 @@ public class MockSmsCodeService implements SmsCodeService {
 
     @Override
     public String sendSmsCode(final String tel) {
-        return "0000000";
+        return "000000";
     }
 }

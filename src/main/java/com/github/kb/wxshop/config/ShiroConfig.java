@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.config;
 
+import com.github.kb.wxshop.service.VerificationCodeCheckService;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
@@ -30,14 +31,18 @@ public class ShiroConfig {
     }
 
     @Bean
-    public SecurityManager securityManager() {
+    public SecurityManager securityManager(final ShiroRealm shiroRealm) {
         final DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-//        securityManager.setRealm();
-
+        securityManager.setRealm(shiroRealm);
         //缓存 
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
         securityManager.setSessionManager(new DefaultSessionManager());
         return securityManager;
+    }
+
+    @Bean
+    public ShiroRealm myShiroRealm(final VerificationCodeCheckService verificationCodeCheckService) {
+        return new ShiroRealm(verificationCodeCheckService);
     }
 
 
