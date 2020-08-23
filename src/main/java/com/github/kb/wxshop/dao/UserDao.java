@@ -14,21 +14,21 @@ import org.springframework.stereotype.Service;
 public class UserDao {
     private final SqlSessionFactory sqlSessionFactory;
 
-    public UserDao(final SqlSessionFactory sqlSessionFactory) {
+    public UserDao(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public void insertUser(final User user) {
-        try (final SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
+    public void insertUser(User user) {
+        try (SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
             final UserMapper mapper = sqlSession.getMapper(UserMapper.class);
             mapper.insert(user);
         }
     }
 
-    public User getUserByTel(final String tel) {
-        try (final SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
-            final UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-            final UserExample example = new UserExample();
+    public User getUserByTel(String tel) {
+        try ( SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
+            UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+            UserExample example = new UserExample();
             example.createCriteria().andTelEqualTo(tel);
             return mapper.selectByExample(example).get(0);
         }
