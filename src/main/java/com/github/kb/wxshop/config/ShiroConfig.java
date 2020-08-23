@@ -34,7 +34,7 @@ public class ShiroConfig {
     public SecurityManager securityManager(final ShiroRealm shiroRealm) {
         final DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(shiroRealm);
-        //缓存 
+        //缓存
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
         securityManager.setSessionManager(new DefaultSessionManager());
         return securityManager;
