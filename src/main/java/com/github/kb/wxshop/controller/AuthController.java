@@ -5,10 +5,7 @@ import com.github.kb.wxshop.service.TelVerificationService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +39,12 @@ public class AuthController {
         UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
         token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
+    }
+
+    @GetMapping("/status")
+    public void loginStatus() {
+
+        System.out.println(SecurityUtils.getSubject().getPrincipal());
     }
 
     public static class TelAndCode {
