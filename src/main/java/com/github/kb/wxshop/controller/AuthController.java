@@ -43,7 +43,6 @@ public class AuthController {
 
     @GetMapping("/status")
     public void loginStatus() {
-
         System.out.println(SecurityUtils.getSubject().getPrincipal());
     }
 

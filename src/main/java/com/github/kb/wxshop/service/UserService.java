@@ -32,4 +32,13 @@ public class UserService {
         return user;
 
     }
+
+    /**
+     * 根据电话返回用户 如果客户不存在 返回null
+     * @param tel 电话
+     * @return
+     */
+    public User getUserByTel(String tel) {
+        return userDao.getUserByTel(tel);
+    }
 }
