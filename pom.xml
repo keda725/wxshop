@@ -75,6 +75,13 @@
             <version>1.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>6.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
