@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
  * @author zuojiabin
@@ -47,7 +46,12 @@ public class AuthController {
 
     public static class TelAndCode {
         private String code;
-        private String Tel;
+        private String tel;
+
+        public TelAndCode(String code, String tel) {
+            this.code = code;
+            this.tel = tel;
+        }
 
         public String getCode() {
             return this.code;
@@ -58,11 +62,11 @@ public class AuthController {
         }
 
         public String getTel() {
-            return this.Tel;
+            return this.tel;
         }
 
         public void setTel(final String tel) {
-            this.Tel = tel;
+            this.tel = tel;
         }
     }
 }

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class TelVerificationService {
-    private static Pattern TEL_PATTERN = Pattern.compile("1\\{10}");
+    private static Pattern TEL_PATTERN = Pattern.compile("1\\d{10}");
     /**
      * 验证输入的参数是否合法
      * tel必须是存在且为合法的中国大陆手机号

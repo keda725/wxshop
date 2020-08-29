@@ -1,4 +1,7 @@
-import static org.junit.jupiter.api.Assertions.*;
+package com.github.kb.wxshop.service;
+
+
 class UserServiceTest {
-  
+
+
 }
