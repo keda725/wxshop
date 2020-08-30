@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * @author zuojiabin
- */
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
     @Autowired
@@ -53,8 +50,6 @@ public class ShiroConfig implements WebMvcConfigurer {
         });
     }
 
-
-
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, ShiroLoginFilter shiroLoginFilter) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -78,17 +73,17 @@ public class ShiroConfig implements WebMvcConfigurer {
     @Bean
     public SecurityManager securityManager(ShiroRealm shiroRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+
         securityManager.setRealm(shiroRealm);
-        //缓存
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
         securityManager.setSessionManager(new DefaultWebSessionManager());
+        SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
     }
 
     @Bean
-    public ShiroRealm myShiroRealm(final VerificationCodeCheckService verificationCodeCheckService) {
+    public ShiroRealm myShiroRealm(VerificationCodeCheckService verificationCodeCheckService) {
         return new ShiroRealm(verificationCodeCheckService);
     }
-
 
 }
