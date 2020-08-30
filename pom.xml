@@ -191,9 +191,9 @@
                     </execution>
                     <execution>
                         <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
                         <configuration>
                             <rules>
                                 <rule>
