@@ -20,13 +20,12 @@ import java.util.Map;
 
 import static com.github.kb.wxshop.service.TelVerificationServiceTest.VALID_PARAMETER;
 import static com.github.kb.wxshop.service.TelVerificationServiceTest.VALID_PARAMETER_CODE;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yml")
-public class AuthIntegrationTest {
+public class CodeIntegrationTest {
     @Autowired
     Environment environment;
 
@@ -98,8 +97,6 @@ public class AuthIntegrationTest {
     private String getSessionIdFromSetCookie(String setCookie) {
         //JSESSIONID=974b0c15-dd10-4d91-b3e6-e32fd73fde68; Path=/; HttpOnly; SameSite=lax -> JSESSIONID=974b0c15-dd10-4d91-b3e6-e32fd73fde68;
         int semiColonIndex = setCookie.indexOf(";");
-        int equalIndex = setCookie.indexOf("=");
-
         return setCookie.substring(0, semiColonIndex);
     }
 
@@ -121,8 +118,20 @@ public class AuthIntegrationTest {
                                       .accept(MediaType.APPLICATION_JSON_VALUE)
                                       .send(objectMapper.writeValueAsString(TelVerificationServiceTest.EMPTY_TEL))
                                       .code();
+        System.out.println(responseCode);
 
         Assertions.assertEquals(HTTP_BAD_REQUEST, responseCode);
+    }
+
+    @Test
+    public void returnUnauthorizedIfNotLogin() throws JsonProcessingException {
+        int responseCode = HttpRequest.post(getUrl("/api/any"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .send(objectMapper.writeValueAsString(TelVerificationServiceTest.EMPTY_TEL))
+                .code();
+
+        Assertions.assertEquals(HTTP_UNAUTHORIZED, responseCode);
     }
 
     private String getUrl(String apiName) {

@@ -1,5 +1,8 @@
 package com.github.kb.wxshop.dao;
 
+import com.github.kb.wxshop.generate.User;
+import com.github.kb.wxshop.generate.UserExample;
+import com.github.kb.wxshop.generate.UserMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

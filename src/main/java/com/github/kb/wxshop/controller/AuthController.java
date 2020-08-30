@@ -57,8 +57,6 @@ public class AuthController {
         } else {
             return LoginResponse.login(UserContext.getCurrentUser());
         }
-//        System.out.println(SecurityUtils.getSubject().getPrincipal());
-//        return null;
     }
 
     public static class TelAndCode {
