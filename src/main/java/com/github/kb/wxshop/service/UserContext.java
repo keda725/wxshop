@@ -5,7 +5,7 @@ import com.github.kb.wxshop.generate.User;
 public class UserContext {
     private static ThreadLocal<User> currentUser = new ThreadLocal<>();
 
-    public static User getCurrent() {
+    public static User getCurrentUser() {
         return currentUser.get();
     }
 

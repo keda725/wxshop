@@ -1,7 +1,9 @@
 package com.github.kb.wxshop.controller;
 
+import com.github.kb.wxshop.entity.LoginResponse;
 import com.github.kb.wxshop.service.AuthService;
 import com.github.kb.wxshop.service.TelVerificationService;
+import com.github.kb.wxshop.service.UserContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.http.HttpStatus;
@@ -41,9 +43,22 @@ public class AuthController {
         SecurityUtils.getSubject().login(token);
     }
 
+    @PostMapping("/logout")
+    public void logout() {
+        SecurityUtils.getSubject().logout();
+    }
+
+
+
     @GetMapping("/status")
-    public void loginStatus() {
-        System.out.println(SecurityUtils.getSubject().getPrincipal());
+    public Object loginStatus() {
+        if (UserContext.getCurrentUser() == null) {
+            return LoginResponse.notLogin();
+        } else {
+            return LoginResponse.login(UserContext.getCurrentUser());
+        }
+//        System.out.println(SecurityUtils.getSubject().getPrincipal());
+//        return null;
     }
 
     public static class TelAndCode {

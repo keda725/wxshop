@@ -17,7 +17,7 @@ public class ShiroRealm extends AuthorizingRealm {
     private final VerificationCodeCheckService verificationCodeCheckService;
 
     @Autowired
-    public ShiroRealm(final VerificationCodeCheckService verificationCodeCheckService) {
+    public ShiroRealm(VerificationCodeCheckService verificationCodeCheckService) {
         this.verificationCodeCheckService = verificationCodeCheckService;
         this.setCredentialsMatcher((token, info) -> new String((char[]) token.getCredentials()).equals(info.getCredentials()));
     }

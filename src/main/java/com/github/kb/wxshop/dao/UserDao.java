@@ -3,6 +3,7 @@ package com.github.kb.wxshop.dao;
 import com.github.kb.wxshop.generate.User;
 import com.github.kb.wxshop.generate.UserExample;
 import com.github.kb.wxshop.generate.UserMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author zuojiabin
  */
+@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_PEN")
 @Service
 public class UserDao {
     private final SqlSessionFactory sqlSessionFactory;

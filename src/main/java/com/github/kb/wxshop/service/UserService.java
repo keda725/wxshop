@@ -36,7 +36,7 @@ public class UserService {
     /**
      * 根据电话返回用户 如果客户不存在 返回null
      * @param tel 电话
-     * @return
+     * @return 返回用户信息
      */
     public User getUserByTel(String tel) {
         return userDao.getUserByTel(tel);
