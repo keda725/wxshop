@@ -30,5 +30,21 @@
             <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
         </table>
 
+        <table schema="wxshop" tableName="GOODS" domainObjectName="Goods">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table schema="wxshop" tableName="ORDER" domainObjectName="Order">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table schema="wxshop" tableName="SHOPPING_CART" domainObjectName="ShoppingCart">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
+        </table>
+
+
     </context>
 </generatorConfiguration>
