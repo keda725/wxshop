@@ -12,8 +12,8 @@ import java.util.Objects;
 @Service
 public class GoodsService {
 
-    private GoodsDao goodsDao;
-    private ShopDao shopDao;
+    private final GoodsDao goodsDao;
+    private final ShopDao shopDao;
 
     @Autowired
     public GoodsService(GoodsDao goodsDao, ShopDao shopDao) {
@@ -30,11 +30,19 @@ public class GoodsService {
         }
     }
 
+    public Goods deleteGoodsById(Long goodsId) {
+        Shop shop = shopDao.findShopById(goodsId);
+        if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+            return goodsDao.deleteGoodsById(goodsId);
+        } else {
+            throw new NoAuthorizedForShopException("无权访问！");
+        }
+    }
+
     public static class NoAuthorizedForShopException extends RuntimeException {
         public NoAuthorizedForShopException(String message) {
             super(message);
         }
     }
-
 
 }
