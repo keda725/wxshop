@@ -2,8 +2,6 @@ package com.github.kb.wxshop.service;
 
 import com.github.kb.wxshop.dao.GoodsDao;
 import com.github.kb.wxshop.dao.ShopDao;
-import com.github.kb.wxshop.generate.Goods;
-import com.github.kb.wxshop.generate.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

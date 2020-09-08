@@ -1,6 +1,5 @@
 package com.github.kb.wxshop.config;
 
-import com.github.kb.wxshop.generate.User;
 import com.github.kb.wxshop.service.UserContext;
 import com.github.kb.wxshop.service.UserService;
 import com.github.kb.wxshop.service.VerificationCodeCheckService;

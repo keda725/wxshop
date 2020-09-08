@@ -1,8 +1,6 @@
 package com.github.kb.wxshop.dao;
 
 import com.github.kb.wxshop.entity.DataStatus;
-import com.github.kb.wxshop.generate.Goods;
-import com.github.kb.wxshop.generate.GoodsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
