@@ -132,7 +132,7 @@ public class GoodsController {
         clean(goods);
         response.setStatus(HttpServletResponse.SC_CREATED);
         try {
-            return Response.of(goodsService.createGood(goods));
+            return Response.of(goodsService.createGoods(goods));
         } catch (GoodsService.NoAuthorizedForShopException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Response.of(e.getMessage(), null);

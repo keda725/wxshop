@@ -21,12 +21,12 @@ public class GoodsService {
         this.shopDao = shopDao;
     }
 
-    public Goods createGood(Goods goods) {
+    public Goods createGoods(Goods goods) {
         Shop shop = shopDao.findShopById(goods.getShopId());
         if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
             return goodsDao.insertGoods(goods);
         } else {
-            throw new NoAuthorizedForShopException("无权访问！");
+            throw new NoAuthorizedForShopException("无权访问!");
         }
     }
 

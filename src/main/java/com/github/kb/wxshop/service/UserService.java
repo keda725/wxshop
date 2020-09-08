@@ -18,16 +18,16 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public User createUserIfNotExists(final String tel) {
-        final User user = new User();
+    public User createUserIfNotExists(String tel) {
+        User user = new User();
         user.setTel(tel);
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
         try {
-            this.userDao.insertUser(user);
-        } catch (final PersistenceException e) {
+            userDao.insertUser(user);
+        } catch (PersistenceException e) {
             e.printStackTrace();
-            return this.userDao.getUserByTel(tel);
+            return userDao.getUserByTel(tel);
         }
         return user;
 

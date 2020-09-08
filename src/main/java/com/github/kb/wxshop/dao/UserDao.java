@@ -3,36 +3,37 @@ package com.github.kb.wxshop.dao;
 import com.github.kb.wxshop.generate.User;
 import com.github.kb.wxshop.generate.UserExample;
 import com.github.kb.wxshop.generate.UserMapper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @author zuojiabin
  */
-@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_PEN")
 @Service
 public class UserDao {
-    private final SqlSessionFactory sqlSessionFactory;
+    private final UserMapper userMapper;
 
-    public UserDao(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
+    @Autowired
+    public UserDao(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
+
     public void insertUser(User user) {
-        try (SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
-            final UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-            mapper.insert(user);
+        try {
+            userMapper.insert(user);
+        } catch (Exception e) {
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("用户已注册");
+            }
         }
     }
 
     public User getUserByTel(String tel) {
-        try ( SqlSession sqlSession = this.sqlSessionFactory.openSession(true)) {
-            UserMapper mapper = sqlSession.getMapper(UserMapper.class);
             UserExample example = new UserExample();
             example.createCriteria().andTelEqualTo(tel);
-            return mapper.selectByExample(example).get(0);
+            return userMapper.selectByExample(example).get(0);
         }
     }
-}

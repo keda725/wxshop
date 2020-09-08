@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ShopDao {
+
     private final ShopMapper shopMapper;
 
     @Autowired
@@ -15,7 +16,8 @@ public class ShopDao {
     }
 
     public Shop findShopById(Long shopId) {
-            return shopMapper.selectByPrimaryKey(shopId);
-        }
+
+        return shopMapper.selectByPrimaryKey(shopId);
     }
+}
 
