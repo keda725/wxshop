@@ -2,6 +2,7 @@ package com.github.kb.wxshop.controller;
 
 import com.github.kb.wxshop.dao.GoodsDao;
 import com.github.kb.wxshop.entity.Response;
+import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
