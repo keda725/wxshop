@@ -1,6 +1,7 @@
 package com.github.kb.wxshop.service;
 
 import com.github.kb.wxshop.entity.DataStatus;
+import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.generate.*;
 import org.junit.jupiter.api.AfterEach;
@@ -60,9 +61,11 @@ class GoodsServiceTest {
     @Test
     public void createGoodsSuccessIfUserIsNotOwner() {
         when(shop.getOwnerUserId()).thenReturn(2L);
-        assertThrows(GoodsService.NoAuthorizedForShopException.class, () -> {
+        HttpException thrownException = assertThrows(HttpException.class, () -> {
             goodsService.createGoods(goods);
         });
+
+        assertEquals(403, thrownException.getStatusCode());
     }
 
     @Test
@@ -70,18 +73,22 @@ class GoodsServiceTest {
         long goodsToBeDeleted = 123;
         when(shop.getOwnerUserId()).thenReturn(1L);
         when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(null);
-        assertThrows(GoodsService.ResourceNotFoundException.class, () -> {
+        HttpException thrownException = assertThrows(HttpException.class, () -> {
             goodsService.deleteGoodsById(goodsToBeDeleted);
         });
+
+        assertEquals(404, thrownException.getStatusCode());
     }
 
     @Test
     public void deleteGoodsThrowExceptionIfUserIsNotOwner() {
         long goodsToBeDeleted = 123;
         when(shop.getOwnerUserId()).thenReturn(2L);
-        assertThrows(GoodsService.NoAuthorizedForShopException.class, () -> {
+        HttpException thrownException = assertThrows(HttpException.class, () -> {
             goodsService.deleteGoodsById(goodsToBeDeleted);
         });
+
+        assertEquals(403, thrownException.getStatusCode());
     }
 
     @Test

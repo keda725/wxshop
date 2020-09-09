@@ -24,4 +24,7 @@ public class Response<T> {
         return data;
     }
 
+    public String getMessage() {
+        return message;
+    }
 }

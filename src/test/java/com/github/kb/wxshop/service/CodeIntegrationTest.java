@@ -21,7 +21,7 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
-        String sessionId = loginAndGetCookie();
+        String sessionId = loginAndGetCookie().cookie;
 
         // 带着Cookie访问 /api/status 应该处于登陆状态
         String statusResponse = doHttpRequest("/api/v1/status", true, null, sessionId).body;
@@ -31,7 +31,7 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
 
         // 调用/api/logout
         //注销登录 也需要带Cookie
-        doHttpRequest("/api/logout", false, null, sessionId);
+        doHttpRequest("/api/v1/logout", false, null, sessionId);
 
         // 再次带着Cookie访问/api/status 恢复成未登陆状态
         statusResponse = doHttpRequest("/api/v1/status", true, null, sessionId).body;
@@ -44,7 +44,7 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
 
     @Test
     public void returnHttpOKWhenParameterIsCorrect() throws JsonProcessingException {
-        int responseCode = HttpRequest.post(getUrl("/api/code"))
+        int responseCode = HttpRequest.post(getUrl("/api/v1/code"))
                                       .contentType(MediaType.APPLICATION_JSON_VALUE)
                                       .accept(MediaType.APPLICATION_JSON_VALUE)
                                       .send(objectMapper.writeValueAsString(VALID_PARAMETER))
@@ -54,7 +54,7 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
 
     @Test
     public void returnHttpBadRequestWhenParameterIsCorrect() throws JsonProcessingException {
-        int responseCode = HttpRequest.post(getUrl("/api/code"))
+        int responseCode = HttpRequest.post(getUrl("/api/v1/code"))
                                       .contentType(MediaType.APPLICATION_JSON_VALUE)
                                       .accept(MediaType.APPLICATION_JSON_VALUE)
                                       .send(objectMapper.writeValueAsString(TelVerificationServiceTest.EMPTY_TEL))
@@ -66,7 +66,7 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
 
     @Test
     public void returnUnauthorizedIfNotLogin() throws JsonProcessingException {
-        int responseCode = HttpRequest.post(getUrl("/api/any"))
+        int responseCode = HttpRequest.post(getUrl("/api/v1/any"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .send(objectMapper.writeValueAsString(TelVerificationServiceTest.EMPTY_TEL))

@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.controller;
 
+import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
@@ -144,8 +145,8 @@ public class GoodsController {
         response.setStatus(HttpServletResponse.SC_CREATED);
         try {
             return Response.of(goodsService.createGoods(goods));
-        } catch (GoodsService.NoAuthorizedForShopException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
@@ -210,11 +211,8 @@ public class GoodsController {
     public Response<Goods> updatedGoods(Goods goods, HttpServletResponse response) {
         try {
             return Response.of(goodsService.updateGoods(goods));
-        } catch (GoodsService.NoAuthorizedForShopException e) {
+        } catch (HttpException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        } catch (GoodsService.ResourceNotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return Response.of(e.getMessage(), null);
         }
 
@@ -270,11 +268,8 @@ public class GoodsController {
         try {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return Response.of(goodsService.deleteGoodsById(goodsId));
-        } catch (GoodsService.NoAuthorizedForShopException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        } catch (GoodsService.ResourceNotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
