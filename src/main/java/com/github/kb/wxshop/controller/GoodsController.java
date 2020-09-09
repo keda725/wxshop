@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.wxshop.dao.GoodsDao;
+import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.service.GoodsService;
@@ -64,8 +64,19 @@ public class GoodsController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     *
+     * @param pageNum 页码
+     * @param pageSize 分页容量
+     * @param shopId 商店ID
+     * @return PageResponse
+     */
     // @formatter:on
-    public void getGoods() {
+    @GetMapping("/goods")
+    public @ResponseBody PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                                                      @RequestParam("pageSize") Integer pageSize,
+                                                      @RequestParam(value = "shopId", required = false) Integer shopId) {
+        return goodsService.getGoods(pageNum, pageSize, shopId);
 
     }
 
@@ -189,8 +200,23 @@ public class GoodsController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     *
+     * @param goods 商品
+     * @param response http response
+     * @return Response
+     */
     // @formatter:on
-    public void updatedGoods() {
+    public Response<Goods> updatedGoods(Goods goods, HttpServletResponse response) {
+        try {
+            return Response.of(goodsService.updateGoods(goods));
+        } catch (GoodsService.NoAuthorizedForShopException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return Response.of(e.getMessage(), null);
+        } catch (GoodsService.ResourceNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return Response.of(e.getMessage(), null);
+        }
 
     }
 
@@ -247,7 +273,7 @@ public class GoodsController {
         } catch (GoodsService.NoAuthorizedForShopException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Response.of(e.getMessage(), null);
-        } catch (GoodsDao.ResourceNotFoundException e) {
+        } catch (GoodsService.ResourceNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return Response.of(e.getMessage(), null);
         }

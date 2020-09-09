@@ -17,6 +17,9 @@ public class Response<T> {
         this.data = data;
     }
 
+    public Response() {
+    }
+
     public T getData() {
         return data;
     }
