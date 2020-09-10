@@ -208,6 +208,7 @@ public class GoodsController {
      * @return Response
      */
     // @formatter:on
+    @PatchMapping("/update/{id}")
     public Response<Goods> updatedGoods(Goods goods, HttpServletResponse response) {
         try {
             return Response.of(goodsService.updateGoods(goods));

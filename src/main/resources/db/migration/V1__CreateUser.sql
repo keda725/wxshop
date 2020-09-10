@@ -9,3 +9,6 @@ CREATE TABLE `USER`(
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
+
+  INSERT INTO USER(NAME, TEL, AVATAR_URL, ADDRESS)
+  VALUES ('user1', '13800000000', 'http://url', '上海')
