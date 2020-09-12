@@ -1,12 +1,9 @@
 package com.github.kb.wxshop.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kb.wxshop.entity.PageResponse;
-import com.github.kb.wxshop.generate.Shop;
-import com.github.kb.wxshop.generate.ShoppingCart;
+import com.github.kb.wxshop.entity.ShoppingCartData;
 import com.github.kb.wxshop.service.ShoppingCartService;
 import com.github.kb.wxshop.service.UserContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -84,25 +81,7 @@ public class ShoppingCartController {
         return shoppingCartService.getShoppingCartOfUser(UserContext.getCurrentUser().getId(), pageNum, pageSize);
     }
 
-    public static class ShoppingCartData {
-        @JsonProperty("shop")
-        Shop shop;
-        @JsonProperty("goods")
-        List<ShoppingCartGoods> goods;
 
-    }
-
-    private static class ShoppingCartGoods {
-        int number;
-
-        public int getNumber() {
-            return number;
-        }
-
-        public void setNumber(int number) {
-            this.number = number;
-        }
-    }
 
     // @formatter:off
 
@@ -144,7 +123,6 @@ public class ShoppingCartController {
      * "description": "纯天然无污染肥皂",
      * "details": "这是一块好肥皂",
      * "imgUrl": "https://img.url",
-     * "address": "XXX",
      * "price": 500,
      * "number": 10,
      * "createdAt": "2020-03-22T13:22:03Z",

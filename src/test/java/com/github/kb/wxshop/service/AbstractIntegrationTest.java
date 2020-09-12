@@ -1,6 +1,7 @@
 package com.github.kb.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kb.wxshop.WxshopApplication;
 import com.github.kb.wxshop.entity.LoginResponse;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -100,6 +102,10 @@ public class AbstractIntegrationTest {
             this.code = code;
             this.body = body;
             this.headers = headers;
+        }
+
+        public <T> T asJsonObject(TypeReference<T> typeReference) throws JsonProcessingException {
+            return objectMapper.readValue(body, typeReference);
         }
     }
 
