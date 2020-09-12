@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.kb.wxshop.WxshopApplication;
 import com.github.kb.wxshop.controller.ShoppingCartController;
-import com.github.kb.wxshop.entity.PageResponse;
-import com.github.kb.wxshop.entity.Response;
-import com.github.kb.wxshop.entity.ShoppingCartData;
-import com.github.kb.wxshop.entity.ShoppingCartGoods;
+import com.github.kb.wxshop.entity.*;
 import com.github.kb.wxshop.generate.Goods;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +29,7 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest {
         UserLoginResponse loginResponse = loginAndGetCookie();
 
         PageResponse<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart?pageNum=2&pageSize=1",
-                true, null, loginResponse.cookie).asJsonObject(new TypeReference<PageResponse<ShoppingCartData>>() {
+                "GET", null, loginResponse.cookie).asJsonObject(new TypeReference<PageResponse<ShoppingCartData>>() {
         });
 
         assertEquals(2, response.getPageNum());
@@ -45,10 +42,10 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest {
                         .map(Goods::getId).collect(Collectors.toList()));
         assertEquals(Arrays.asList(100L, 200L),
                 response.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getPrice).collect(Collectors.toList()));
+                        .map(GoodsWithNumber::getPrice).collect(Collectors.toList()));
         assertEquals(Arrays.asList(200, 300),
                 response.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
+                        .map(GoodsWithNumber::getNumber).collect(Collectors.toList()));
     }
 
     @Test
@@ -64,17 +61,34 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest {
 
 
         Response<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart",
-                false, request, loginResponse.cookie).asJsonObject(new TypeReference<Response<ShoppingCartData>>() {
+                "POST", request, loginResponse.cookie).asJsonObject(new TypeReference<Response<ShoppingCartData>>() {
         });
 
         assertEquals(1L, response.getData().getShop().getId());
         assertEquals(Arrays.asList(1L),
                 response.getData().getGoods().stream().map(Goods::getId).collect(Collectors.toList()));
         assertEquals(Sets.newHashSet(100),
-                response.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toSet()));
-        Assertions.assertTrue(response.getData().getGoods().stream().allMatch(goods -> goods.getShopId() == 1));
+                response.getData().getGoods().stream().map(GoodsWithNumber::getNumber).collect(Collectors.toSet()));
+        Assertions.assertTrue(response.getData().getGoods().stream().allMatch(goods -> goods.getShopId() == 1L));
 
     }
 
+    @Test
+    public void canDeleteShoppingCartData() throws JsonProcessingException {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+        Response<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart/5",
+                "DELETE", null, loginResponse.cookie).asJsonObject(new TypeReference<Response<ShoppingCartData>>() {
+        });
+
+        assertEquals(2L, response.getData().getShop().getId());
+
+        assertEquals(1, response.getData().getGoods().size());
+        GoodsWithNumber goods = response.getData().getGoods().get(0);
+        assertEquals(4L, goods.getId());
+        assertEquals(200, goods.getNumber());
+        // TODO: status null
+        assertEquals(DataStatus.OK.toString().toLowerCase(), goods.getStatus());
+
+    }
 
 }

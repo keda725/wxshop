@@ -59,22 +59,22 @@ public class AbstractIntegrationTest {
 
     public UserLoginResponse loginAndGetCookie() throws JsonProcessingException {
         // 最开始默认情况下 访问/api/status 处于为登陆状态
-        String statusResponse = doHttpRequest("/api/v1/status", true, null, null).body;
+        String statusResponse = doHttpRequest("/api/v1/status", "GET", null, null).body;
         LoginResponse statusResponseData = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertFalse(statusResponseData.isLogin());
 
         // 发送验证码
-        int responseCode = doHttpRequest("/api/v1/code", false, VALID_PARAMETER, null).code;
+        int responseCode = doHttpRequest("/api/v1/code", "POST", VALID_PARAMETER, null).code;
         Assertions.assertEquals(HTTP_OK, responseCode);
 
         // 带着验证码进行登陆 得到Cookie
-        HttpResponse loginResponse = doHttpRequest("/api/v1/login", false, VALID_PARAMETER_CODE, null);
+        HttpResponse loginResponse = doHttpRequest("/api/v1/login", "POST", VALID_PARAMETER_CODE, null);
         List<String> setCookie = loginResponse.headers.get("Set-Cookie");
         String cookie = getSessionIdFromSetCookie(setCookie.stream().filter(c -> c.contains("JSESSIONID"))
                 .findFirst()
                 .get());
 
-        statusResponse = doHttpRequest("/api/v1/status", true, null, cookie).body;
+        statusResponse = doHttpRequest("/api/v1/status", "GET", null, cookie).body;
         statusResponseData = objectMapper.readValue(statusResponse, LoginResponse.class);
 
         return new UserLoginResponse(cookie, statusResponseData.getUser());
@@ -108,8 +108,18 @@ public class AbstractIntegrationTest {
         }
     }
 
-    public HttpResponse doHttpRequest(String apiName, boolean isGet, Object requestBody, String cookie) throws JsonProcessingException {
-        HttpRequest request = isGet ? HttpRequest.get(getUrl(apiName)) : HttpRequest.post(getUrl(apiName));
+    private HttpRequest createRequest(String url, String httpMethod) {
+        if ("PATCH".equalsIgnoreCase(httpMethod)) {
+            HttpRequest request = new HttpRequest(url, "POST");
+            request.header("X-HTTP-Method-Override", "PATCH");
+            return request;
+        } else {
+            return new HttpRequest(url, httpMethod);
+        }
+    }
+
+    public HttpResponse doHttpRequest(String apiName, String httpMethod, Object requestBody, String cookie) throws JsonProcessingException {
+        HttpRequest request = createRequest(getUrl(apiName), httpMethod);
         if (cookie != null) {
             request.header("Cookie", cookie);
         }
@@ -120,6 +130,8 @@ public class AbstractIntegrationTest {
 
         return new HttpResponse(request.code(), request.body(), request.headers());
     }
+
+
 
     protected String getSessionIdFromSetCookie(String setCookie) {
         //JSESSIONID=974b0c15-dd10-4d91-b3e6-e32fd73fde68; Path=/; HttpOnly; SameSite=lax -> JSESSIONID=974b0c15-dd10-4d91-b3e6-e32fd73fde68;

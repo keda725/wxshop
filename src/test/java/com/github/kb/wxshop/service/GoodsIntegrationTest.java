@@ -29,7 +29,7 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
         shop.setDescription("我的小店开张了");
         shop.setImgUrl("http://url");
         HttpResponse shopResponse = doHttpRequest(
-                "/api/v1/shop", false, shop, loginResponse.cookie);
+                "/api/v1/shop", "POST", shop, loginResponse.cookie);
         Response<Shop> shopInResponse = objectMapper.readValue(shopResponse.body, new TypeReference<Response<Shop>>() {});
 
         Assertions.assertEquals(SC_CREATED, shopResponse.code);
@@ -48,7 +48,7 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
         goods.setShopId(shopInResponse.getData().getId());
 
         HttpResponse response = doHttpRequest(
-                "/api/v1/goods", false, goods, loginResponse.cookie);
+                "/api/v1/goods", "POST", goods, loginResponse.cookie);
         Response<Goods> goodsInResponse = objectMapper.readValue(response.body, new TypeReference<Response<Goods>>() {});
         Assertions.assertEquals(SC_CREATED, response.code);
         Assertions.assertEquals("肥皂", goodsInResponse.getData().getName());

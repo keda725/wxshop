@@ -24,17 +24,17 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
         String sessionId = loginAndGetCookie().cookie;
 
         // 带着Cookie访问 /api/status 应该处于登陆状态
-        String statusResponse = doHttpRequest("/api/v1/status", true, null, sessionId).body;
+        String statusResponse = doHttpRequest("/api/v1/status", "GET", null, sessionId).body;
         LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertTrue(response.isLogin());
         Assertions.assertEquals(VALID_PARAMETER.getTel(), response.getUser().getTel());
 
         // 调用/api/logout
         //注销登录 也需要带Cookie
-        doHttpRequest("/api/v1/logout", false, null, sessionId);
+        doHttpRequest("/api/v1/logout", "POST", null, sessionId);
 
         // 再次带着Cookie访问/api/status 恢复成未登陆状态
-        statusResponse = doHttpRequest("/api/v1/status", true, null, sessionId).body;
+        statusResponse = doHttpRequest("/api/v1/status", "GET", null, sessionId).body;
 
         response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertFalse(response.isLogin());
@@ -75,15 +75,6 @@ public class CodeIntegrationTest extends AbstractIntegrationTest{
         Assertions.assertEquals(HTTP_UNAUTHORIZED, responseCode);
     }
 
-    @Test
-    public void return404IfGoodsToDeletedNotExist() throws JsonProcessingException {
-//        String cookie = loginAndGetCookie();
-//        HttpResponse response = doHttpRequest(
-//                "/api/v1/goods/12345678",
-//                "DELETE",
-//                null,
-//                cookie);
-    }
 
 
 }
