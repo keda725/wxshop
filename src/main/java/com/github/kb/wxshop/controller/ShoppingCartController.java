@@ -1,6 +1,8 @@
 package com.github.kb.wxshop.controller;
 
+import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
+import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.entity.ShoppingCartData;
 import com.github.kb.wxshop.service.ShoppingCartService;
 import com.github.kb.wxshop.service.UserContext;
@@ -75,8 +77,7 @@ public class ShoppingCartController {
      * }
      */
     /**
-     *
-     * @param pageNum 页码
+     * @param pageNum  页码
      * @param pageSize 每页数据
      * @return pageResponse
      */
@@ -86,7 +87,6 @@ public class ShoppingCartController {
                                                           @RequestParam("pageSize") int pageSize) {
         return shoppingCartService.getShoppingCartOfUser(UserContext.getCurrentUser().getId(), pageNum, pageSize);
     }
-
 
 
     // @formatter:off
@@ -152,11 +152,16 @@ public class ShoppingCartController {
      */
     /**
      * @param request 请求
+     * @return ShoppingCartData
      */
     // @formatter:on
     @PostMapping("/shoppingCart")
-    public void addToShoppingCart(@RequestBody AddToShoppingCartRequest request) {
-
+    public Response<ShoppingCartData> addToShoppingCart(@RequestBody AddToShoppingCartRequest request) {
+        try {
+            return Response.of(shoppingCartService.addToShoppingCart(request));
+        } catch (HttpException e) {
+            return Response.of(e.getMessage(), null);
+        }
     }
 
     public static class AddToShoppingCartRequest {

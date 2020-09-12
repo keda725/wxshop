@@ -6,7 +6,6 @@ import com.github.kb.wxshop.generate.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @author zuojiabin
@@ -22,18 +21,12 @@ public class UserDao {
 
 
     public void insertUser(User user) {
-        try {
-            userMapper.insert(user);
-        } catch (Exception e) {
-            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("用户已注册");
-            }
-        }
+        userMapper.insert(user);
     }
 
     public User getUserByTel(String tel) {
-            UserExample example = new UserExample();
-            example.createCriteria().andTelEqualTo(tel);
-            return userMapper.selectByExample(example).get(0);
-        }
+        UserExample example = new UserExample();
+        example.createCriteria().andTelEqualTo(tel);
+        return userMapper.selectByExample(example).get(0);
     }
+}

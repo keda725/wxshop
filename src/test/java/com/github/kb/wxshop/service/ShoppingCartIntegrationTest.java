@@ -3,10 +3,14 @@ package com.github.kb.wxshop.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.kb.wxshop.WxshopApplication;
+import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.PageResponse;
+import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.entity.ShoppingCartData;
 import com.github.kb.wxshop.entity.ShoppingCartGoods;
 import com.github.kb.wxshop.generate.Goods;
+import com.google.common.collect.Sets;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,4 +50,31 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest {
                 response.getData().get(0).getGoods().stream()
                         .map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
     }
+
+    @Test
+    public void canAddShoppingCartData() throws JsonProcessingException {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+
+        ShoppingCartController.AddToShoppingCartRequest request = new ShoppingCartController.AddToShoppingCartRequest();
+        ShoppingCartController.AddToShoppingCartItem item = new ShoppingCartController.AddToShoppingCartItem();
+        item.setId(2L);
+        item.setNumber(2);
+
+        request.setGoods(Collections.singletonList(item));
+
+
+        Response<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart",
+                false, request, loginResponse.cookie).asJsonObject(new TypeReference<Response<ShoppingCartData>>() {
+        });
+
+        assertEquals(1L, response.getData().getShop().getId());
+        assertEquals(Arrays.asList(1L),
+                response.getData().getGoods().stream().map(Goods::getId).collect(Collectors.toList()));
+        assertEquals(Sets.newHashSet(100),
+                response.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toSet()));
+        Assertions.assertTrue(response.getData().getGoods().stream().allMatch(goods -> goods.getShopId() == 1));
+
+    }
+
+
 }
