@@ -74,6 +74,12 @@ public class ShoppingCartController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     *
+     * @param pageNum 页码
+     * @param pageSize 每页数据
+     * @return pageResponse
+     */
     // @formatter:on
     @GetMapping("/shoppingCart")
     public PageResponse<ShoppingCartData> getShoppingCart(@RequestParam("pageNum") int pageNum,
@@ -143,6 +149,9 @@ public class ShoppingCartController {
      * {
      * "message": "Unauthorized"
      * }
+     */
+    /**
+     * @param request 请求
      */
     // @formatter:on
     @PostMapping("/shoppingCart")

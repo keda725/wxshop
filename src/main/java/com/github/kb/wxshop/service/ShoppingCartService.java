@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -39,7 +37,7 @@ public class ShoppingCartService {
 
 
         int totalPage = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize + 1;
-        return PageResponse.pageData(pageNum,pageSize, totalPage,pagedDate);
+        return PageResponse.pageData(pageNum, pageSize, totalPage, pagedDate);
 
     }
 

@@ -2,7 +2,6 @@ package com.github.kb.wxshop.service;
 
 import com.github.kb.wxshop.dao.UserDao;
 import com.github.kb.wxshop.generate.User;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
