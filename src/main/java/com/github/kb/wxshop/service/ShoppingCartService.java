@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @Service
 public class ShoppingCartService {
     private ShoppingCartQueryMapper shoppingCartQueryMapper;
@@ -27,11 +29,13 @@ public class ShoppingCartService {
         int offset = (pageNum - 1) * pageSize;
 
         int totalNum = shoppingCartQueryMapper.countHowManyShopsInUserShoppingCart(userId);
-        List<ShoppingCartData> pagedDate = shoppingCartQueryMapper.selectShoppingCartDataByUserId(userId, pageSize, offset);
-        Map<Long, List<ShoppingCartData>> groupByShopId = pagedDate.stream().collect(
-                Collectors.groupingBy(shoppingCartData -> shoppingCartData.getShop().getId())
-        );
-        List<ShoppingCartData> result = groupByShopId.values().stream().map(this::merge).collect(Collectors.toList());
+        List<ShoppingCartData> pagedDate = shoppingCartQueryMapper.selectShoppingCartDataByUserId(userId, pageSize, offset)
+                .stream()
+                .collect(groupingBy(shoppingCartData -> shoppingCartData.getShop().getId()))
+                .values()
+                .stream()
+                .map(this::merge)
+                .collect(toList());
 
 
         int totalPage = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize + 1;
@@ -45,7 +49,7 @@ public class ShoppingCartService {
         List<ShoppingCartGoods> goods = goodsOfSameShop.stream()
                 .map(ShoppingCartData::getGoods)
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .collect(toList());
         result.setGoods(goods);
         return result;
     }

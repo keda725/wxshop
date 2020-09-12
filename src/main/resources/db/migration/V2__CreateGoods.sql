@@ -21,4 +21,4 @@ VALUES (3, 2, 'goods3', 'desc1', 'details1', 'url1', 100, 5, 'ok');
 INSERT INTO GOODS(ID, SHOP_ID, NAME, DESCRIPTION, DETAILS, IMG_URL, PRICE, STOCK, STATUS)
 VALUES (4, 2, 'goods4', 'desc1', 'details1', 'url1', 100, 5, 'ok');
 INSERT INTO GOODS(ID, SHOP_ID, NAME, DESCRIPTION, DETAILS, IMG_URL, PRICE, STOCK, STATUS)
-VALUES (5, 2, 'goods5', 'desc1', 'details1', 'url1', 100, 5, 'ok');
+VALUES (5, 2, 'goods5', 'desc1', 'details1', 'url1', 200, 5, 'ok');

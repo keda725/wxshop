@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.kb.wxshop.WxshopApplication;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.entity.ShoppingCartData;
+import com.github.kb.wxshop.entity.ShoppingCartGoods;
 import com.github.kb.wxshop.generate.Goods;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,9 +40,9 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
                         .map(Goods::getId).collect(Collectors.toList()));
         assertEquals(Arrays.asList(100L,200L),
                 response.getData().get(0).getGoods().stream()
-                        .map(Goods::getId).collect(Collectors.toList()));
+                        .map(ShoppingCartGoods::getPrice).collect(Collectors.toList()));
         assertEquals(Arrays.asList(200,300),
                 response.getData().get(0).getGoods().stream()
-                        .map(Goods::getId).collect(Collectors.toList()));
+                        .map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
     }
 }
