@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    @Reference(version = "${wxshop.orderService.version}")
+    @Reference(version = "${wxshop.orderService.version}",
+                url = "${wxshop.orderService.url}")
     private OrderService orderService;
 
     @RequestMapping("/testRpc")
