@@ -1,11 +1,24 @@
 package com.github.kb.wxshop.controller;
 
+import com.github.kb.wxshop.api.OrderService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class OrderController {
+    @Reference(version = "${wxshop.orderService.version}")
+    private OrderService orderService;
+
+    @RequestMapping("/testRpc")
+    public String testRpc() {
+        orderService.placeOrder(1, 2);
+        return "";
+    }
+
+
+
     // @formatter:off
     /**
      * @api {get} /order 获取当前用户名下的所有订单

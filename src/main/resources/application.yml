@@ -4,6 +4,16 @@ spring:
     username: root
     password: root
     driverClassName: com.mysql.cj.jdbc.Driver
-
+  application:
+    name: wxshop
 mybatis:
   config-location: classpath:db/mybatis/config.xml
+
+wxshop:
+  orderService:
+    version: 1.0.0
+
+
+dubbo:
+  registry:
+    address: zookeeper://127.0.0.1:2181
