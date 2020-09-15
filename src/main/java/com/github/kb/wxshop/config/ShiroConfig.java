@@ -10,7 +10,10 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,6 +31,11 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
     private final UserService userService;
+
+    @Value("${wxshop.redis.host}")
+    String redisHost;
+    @Value("${wxshop.redis.port}")
+    String redisPort;
 
     @Autowired
     public ShiroConfig(UserService userService) {
@@ -84,6 +92,15 @@ public class ShiroConfig implements WebMvcConfigurer {
         securityManager.setSessionManager(new DefaultWebSessionManager());
         SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(redisHost + ":" + redisPort);
+        redisCacheManager.setRedisManager(redisManager);
+        return redisCacheManager;
     }
 
     @Bean
