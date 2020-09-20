@@ -8,5 +8,6 @@ public class RpcOrderServiceImpl implements OrderService {
     @Override
     public String sayHi(String name) {
         return null;
+
     }
 }
