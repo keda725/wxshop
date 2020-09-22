@@ -1,12 +1,10 @@
 package com.github.kb.wxshop.controller;
 
 import com.github.kb.api.data.OrderInfo;
-import com.github.kb.api.rpc.OrderRpcService;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.service.OrderService;
 import com.github.kb.wxshop.service.UserContext;
-import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -163,6 +161,11 @@ public class OrderController {
      *     {
      *       "message": "商品已经售完"
      *     }
+     */
+    /**
+     *
+     * @param orderInfo
+     * @return orderResponse
      */
     // @formatter:on
     @PostMapping("/order")

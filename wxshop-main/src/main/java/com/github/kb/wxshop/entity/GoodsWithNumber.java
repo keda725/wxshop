@@ -1,6 +1,5 @@
 package com.github.kb.wxshop.entity;
 
-import com.github.kb.api.generate.Order;
 import com.github.kb.wxshop.generate.Goods;
 
 public class GoodsWithNumber extends Goods {

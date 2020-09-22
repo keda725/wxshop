@@ -73,8 +73,7 @@ public class ShoppingCartService {
 
 
     public ShoppingCartData addToShoppingCart(ShoppingCartController.AddToShoppingCartRequest request,
-                                              long userId,
-                                              Goods goods) {
+                                              long userId) {
         List<Long> goodsId = request.getGoods()
                 .stream()
                 .map(ShoppingCartController.AddToShoppingCartItem::getId)
@@ -87,7 +86,7 @@ public class ShoppingCartService {
         Map<Long, Goods> idToGoodsMap = goodsService.getIdToGoodsMap(goodsId);
 
         if (idToGoodsMap.values().isEmpty() || idToGoodsMap.values().stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
-            logger.debug("非法请求:{},{}", goodsId, goods);
+            //logger.debug("非法请求:{},{}", goodsId, goods);
             throw HttpException.badRequest("商品ID非法");
         }
         List<ShoppingCart> shoppingCartRows = request.getGoods()

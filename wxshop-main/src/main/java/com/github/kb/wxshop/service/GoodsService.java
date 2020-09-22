@@ -1,7 +1,6 @@
 package com.github.kb.wxshop.service;
 
 import com.github.kb.api.DataStatus;
-import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.generate.*;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 @Service
 public class GoodsService {
