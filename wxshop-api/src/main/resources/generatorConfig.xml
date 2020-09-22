@@ -4,12 +4,12 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <context id="wxshop" targetRuntime="MyBatis3">
+    <context id="order" targetRuntime="MyBatis3">
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
         <plugin type="com.qiukeke.mybatis.plugins.MySQLLimitPlugin" />
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/wxshop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;characterEncoding=utf-8"
+                        connectionURL="jdbc:mysql://localhost:3306/order?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;characterEncoding=utf-8"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -18,39 +18,32 @@
             <property name="forceBigDecimals" value="true" />
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.github.kb.wxshop.generate" targetProject="wxshop-main/src/main/java">
+        <javaModelGenerator targetPackage="com.github.kb.api.generate" targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="db.mybatis" targetProject="wxshop-main/src/main/resources">
+        <sqlMapGenerator targetPackage="db.mybatis" targetProject="wxshop-api/src/main/resources">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.kb.wxshop.generate"
-                             targetProject="wxshop-main/src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.kb.api.generate"
+                             targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="wxshop" tableName="USER" domainObjectName="User">
+
+
+        <table schema="order" tableName="ORDER" domainObjectName="Order">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
         </table>
 
-        <table schema="wxshop" tableName="GOODS" domainObjectName="Goods">
+        <table schema="order" tableName="ORDER_GOODS" domainObjectName="OrderGoods">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
         </table>
 
-        <table schema="wxshop" tableName="SHOP" domainObjectName="Shop">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
-        </table>
-
-        <table schema="wxshop" tableName="SHOPPING_CART" domainObjectName="ShoppingCart">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="ID" sqlStatement="MySql" identity="true"/>
-        </table>
 
 
     </context>

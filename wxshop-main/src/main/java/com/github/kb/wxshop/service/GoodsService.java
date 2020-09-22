@@ -1,6 +1,7 @@
 package com.github.kb.wxshop.service;
 
-import com.github.kb.wxshop.entity.DataStatus;
+import com.github.kb.api.DataStatus;
+import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.generate.*;
@@ -8,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class GoodsService {
@@ -39,7 +44,7 @@ public class GoodsService {
         if (shop == null || Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
             Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
             if (goods == null) {
-                throw  HttpException.notFound("商品未找到！");
+                throw HttpException.notFound("商品未找到！");
             }
             goods.setStatus(DataStatus.DELETED.getName());
             goodsMapper.updateByPrimaryKey(goods);
@@ -83,13 +88,21 @@ public class GoodsService {
             byId.createCriteria().andShopIdEqualTo(goods.getId());
             int affectedRows = goodsMapper.updateByExample(goods, byId);
             if (affectedRows == 0) {
-                throw  HttpException.notFound("未找到！");
+                throw HttpException.notFound("未找到！");
             }
             return goods;
         } else {
             throw HttpException.forbidden("无权访问!");
         }
 
+    }
+
+    public Map<Long, Goods> getIdToGoodsMap(List<Long> goodsId) {
+        GoodsExample example = new GoodsExample();
+        example.createCriteria().andIdIn(goodsId);
+        List<Goods> goods = goodsMapper.selectByExample(example);
+
+        return goods.stream().collect(toMap(Goods::getId, x -> x));
     }
 
 }

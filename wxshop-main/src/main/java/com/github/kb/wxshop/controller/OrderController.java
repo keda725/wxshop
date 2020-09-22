@@ -1,18 +1,23 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.api.rpc.OrderService;
+import com.github.kb.api.data.OrderInfo;
+import com.github.kb.api.rpc.OrderRpcService;
+import com.github.kb.wxshop.entity.OrderResponse;
+import com.github.kb.wxshop.entity.Response;
+import com.github.kb.wxshop.service.OrderService;
+import com.github.kb.wxshop.service.UserContext;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    @Reference(version = "${wxshop.orderservice.version}")
+    @Autowired
     private OrderService orderService;
-
-
-
     // @formatter:off
     /**
      * @api {get} /order 获取当前用户名下的所有订单
@@ -160,7 +165,9 @@ public class OrderController {
      *     }
      */
     // @formatter:on
-    public void createOrder() {
+    @PostMapping("/order")
+    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
+        return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
     }
 
     // @formatter:off

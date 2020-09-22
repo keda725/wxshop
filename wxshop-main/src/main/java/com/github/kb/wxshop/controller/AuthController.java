@@ -1,11 +1,9 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.api.rpc.OrderService;
 import com.github.kb.wxshop.entity.LoginResponse;
 import com.github.kb.wxshop.service.AuthService;
 import com.github.kb.wxshop.service.TelVerificationService;
 import com.github.kb.wxshop.service.UserContext;
-import org.apache.dubbo.config.annotation.Reference;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.http.HttpStatus;

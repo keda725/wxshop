@@ -8,7 +8,7 @@
     </settings>
     <typeAliases>
         <typeAlias type="com.github.kb.wxshop.entity.ShoppingCartData" alias="ShoppingCartData"/>
-        <typeAlias type="com.github.kb.wxshop.entity.ShoppingCartGoods" alias="ShoppingCartGoods"/>
+        <typeAlias type="com.github.kb.wxshop.entity.ShoppingWithNumber" alias="ShoppingCartGoods"/>
         <typeAlias type="com.github.kb.wxshop.generate.Shop" alias="Shop"/>
     </typeAliases>
     <mappers>

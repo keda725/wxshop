@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.entity;
 
+import com.github.kb.api.generate.Order;
 import com.github.kb.wxshop.generate.Goods;
 
 public class GoodsWithNumber extends Goods {
@@ -15,7 +16,6 @@ public class GoodsWithNumber extends Goods {
         this.setDescription(goods.getDescription());
         this.setImgUrl(goods.getImgUrl());
         this.setPrice(goods.getPrice());
-        this.setStock(goods.getStock());
         this.setStatus(goods.getStatus());
         this.setCreatedAt(goods.getCreatedAt());
         this.setUpdatedAt(goods.getUpdatedAt());

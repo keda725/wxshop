@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.service;
 
+import com.github.kb.api.DataStatus;
 import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.*;
 import com.github.kb.wxshop.generate.*;
@@ -11,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.*;
 
@@ -25,12 +23,17 @@ public class ShoppingCartService {
     private ShoppingCartQueryMapper shoppingCartQueryMapper;
     private GoodsMapper goodsMapper;
     private SqlSessionFactory sqlSessionFactory;
+    private GoodsService goodsService;
 
     @Autowired
-    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper, GoodsMapper goodsMapper, SqlSessionFactory sqlSessionFactory) {
+    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper,
+                               GoodsMapper goodsMapper,
+                               SqlSessionFactory sqlSessionFactory,
+                               GoodsService goodsService) {
         this.shoppingCartQueryMapper = shoppingCartQueryMapper;
         this.goodsMapper = goodsMapper;
         this.sqlSessionFactory = sqlSessionFactory;
+        this.goodsService = goodsService;
     }
 
     public PageResponse<ShoppingCartData> getShoppingCartOfUser(Long userId, int pageNum, int pageSize) {
@@ -70,7 +73,8 @@ public class ShoppingCartService {
 
 
     public ShoppingCartData addToShoppingCart(ShoppingCartController.AddToShoppingCartRequest request,
-                                              long userId) {
+                                              long userId,
+                                              Goods goods) {
         List<Long> goodsId = request.getGoods()
                 .stream()
                 .map(ShoppingCartController.AddToShoppingCartItem::getId)
@@ -80,17 +84,12 @@ public class ShoppingCartService {
             throw HttpException.badRequest("商品ID为空");
         }
 
-        GoodsExample example = new GoodsExample();
-        example.createCriteria().andIdIn(goodsId);
-        List<Goods> goods = goodsMapper.selectByExample(example);
+        Map<Long, Goods> idToGoodsMap = goodsService.getIdToGoodsMap(goodsId);
 
-        if (goods.isEmpty() || goods.stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
+        if (idToGoodsMap.values().isEmpty() || idToGoodsMap.values().stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
             logger.debug("非法请求:{},{}", goodsId, goods);
             throw HttpException.badRequest("商品ID非法");
         }
-
-        Map<Long, Goods> idToGoodsMap = goods.stream().collect(toMap(Goods::getId, x -> x));
-
         List<ShoppingCart> shoppingCartRows = request.getGoods()
                 .stream()
                 .map(item -> toShoppingCartRow(item, idToGoodsMap))
@@ -103,7 +102,7 @@ public class ShoppingCartService {
             shoppingCartRows.forEach(mapper::insert);
             sqlSession.commit();
         }
-        return getLatestShoppingCartDataByUserIdShopId(goods.get(0).getShopId(), userId);
+        return getLatestShoppingCartDataByUserIdShopId(new ArrayList<>(idToGoodsMap.values()).get(0).getShopId(), userId);
     }
 
     private ShoppingCart toShoppingCartRow(ShoppingCartController.AddToShoppingCartItem item, Map<Long, Goods> idToGoodsMap) {

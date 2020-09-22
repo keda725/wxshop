@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.service;
 
-import com.github.kb.wxshop.entity.DataStatus;
+import com.github.kb.api.DataStatus;
 import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.generate.*;
