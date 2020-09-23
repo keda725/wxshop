@@ -79,6 +79,7 @@ public class OrderService {
 
     /**
      * 通过RPC创建订单
+     *
      * @param orderInfo
      * @param userId
      * @param idToGoodsMap
@@ -94,6 +95,7 @@ public class OrderService {
 
     /**
      * 获取ID到商品的映射
+     *
      * @param orderInfo
      * @return
      */
@@ -108,6 +110,7 @@ public class OrderService {
 
     /**
      * 扣减库存
+     *
      * @param orderInfo
      * @return 若全部扣减成功 返回true 否则返回false
      */
@@ -132,9 +135,9 @@ public class OrderService {
     }
 
 
-    private BigDecimal calculateTotalPrice(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap) {
+    private Long calculateTotalPrice(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap) {
         // 订单价格总和
-        BigDecimal result = BigDecimal.ZERO;
+        long result = 0L;
 
         for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
             Goods goods = idToGoodsMap.get(goodsInfo.getId());
@@ -146,7 +149,7 @@ public class OrderService {
                 throw HttpException.badRequest("number 非法" + goodsInfo.getNumber());
             }
 
-            result = result.add(goods.getPrice().multiply(new BigDecimal(goodsInfo.getNumber())));
+            result = result + goods.getPrice() * goodsInfo.getNumber();
         }
         return result;
     }
