@@ -19,6 +19,11 @@ public class HttpException extends RuntimeException {
         return new HttpException(HttpStatus.BAD_REQUEST.value(), message);
     }
 
+    public static HttpException gone(String message) {
+        return new HttpException(HttpStatus.GONE.value(), message);
+    }
+
+
 
     public HttpException(int statusCode, String message) {
         super(message);
