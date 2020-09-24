@@ -14,13 +14,13 @@ dubbo:
     base-packages: com.github.kb.wxshop.mock
   protocol:
     name: dubbo
-    port: 12345
+    port: 1234
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: N/A
 wxshop:
-  orderService:
-    version: 1.0.0
-    url: dubbo://127.0.0.1:12345
+  orderservice:
+    version: 0.0.1
+    url: dubbo://127.0.0.1:1234
   redis:
     host: 127.0.0.1
     port: 6380

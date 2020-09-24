@@ -8,7 +8,7 @@
     </settings>
     <typeAliases>
         <typeAlias type="com.github.kb.wxshop.entity.ShoppingCartData" alias="ShoppingCartData"/>
-        <typeAlias type="com.github.kb.wxshop.entity.ShoppingWithNumber" alias="ShoppingCartGoods"/>
+        <typeAlias type="com.github.kb.wxshop.entity.GoodsWithNumber" alias="ShoppingCartGoods"/>
         <typeAlias type="com.github.kb.wxshop.generate.Shop" alias="Shop"/>
         <typeAlias type="com.github.kb.api.data.GoodsInfo" alias="GoodsInfo"/>
     </typeAliases>
@@ -17,7 +17,6 @@
         <mapper resource="db/mybatis/GoodsMapper.xml"/>
         <mapper resource="db/mybatis/GoodsStockMapper.xml"/>
         <mapper resource="db/mybatis/ShopMapper.xml"/>
-        <mapper resource="db/mybatis/OrderMapper.xml"/>
         <mapper resource="db/mybatis/ShoppingCartMapper.xml"/>
         <mapper resource="db/mybatis/ShoppingCartQuery.xml"/>
     </mappers>

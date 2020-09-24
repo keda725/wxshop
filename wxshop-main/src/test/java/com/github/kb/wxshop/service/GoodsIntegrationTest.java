@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
 
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 
@@ -45,7 +44,7 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
         goods.setDescription("纯天然无污染肥皂");
         goods.setDetails("好肥皂");
         goods.setImgUrl("http://url");
-        goods.setPrice(new BigDecimal(1000));
+        goods.setPrice(1000L);
         goods.setStock(10);
         goods.setShopId(shopInResponse.getData().getId());
 

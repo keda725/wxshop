@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.github.kb.wxshop.generate")
+@MapperScan(basePackages = "com.github.kb.wxshop.dao")
 public class WxshopApplication {
 
     public static void main(String[] args) {

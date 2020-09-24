@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.service;
 
+import com.github.kb.api.DataStatus;
 import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.api.data.OrderInfo;
 import com.github.kb.api.generate.Order;
@@ -12,14 +13,13 @@ import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.generate.ShopMapper;
 import com.github.kb.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +52,6 @@ public class OrderService {
     }
 
     public OrderResponse createOrder(OrderInfo orderInfo, Long userId) {
-        // 判断扣减库存是否成功
-        if (!deductStock(orderInfo)) {
-            throw HttpException.gone("扣减库存失败!");
-        }
 
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo);
 
@@ -88,6 +84,7 @@ public class OrderService {
     private Order createOrderViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
         Order order = new Order();
         order.setId(userId);
+        order.setStatus(DataStatus.PENDING.getName());
         order.setAddress(userMapper.selectByPrimaryKey(userId).getAddress());
         order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
         return order;

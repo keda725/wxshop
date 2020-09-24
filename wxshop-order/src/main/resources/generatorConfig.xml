@@ -14,16 +14,12 @@
                         password="root">
         </jdbcConnection>
 
-        <javaTypeResolver>
-            <property name="forceBigDecimals" value="true" />
-        </javaTypeResolver>
-
         <javaModelGenerator targetPackage="com.github.kb.api.generate" targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="db.mybatis" targetProject="wxshop-api/src/main/resources">
+        <sqlMapGenerator targetPackage="db.mybatis" targetProject="wxshop-order/src/main/resources">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
