@@ -3,6 +3,7 @@ package com.github.kb.wxshop.service;
 import com.github.kb.api.DataStatus;
 import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.api.data.OrderInfo;
+import com.github.kb.api.data.RpcOrderGoods;
 import com.github.kb.api.generate.Order;
 import com.github.kb.api.rpc.OrderRpcService;
 import com.github.kb.wxshop.dao.GoodsStockMapper;
@@ -10,17 +11,18 @@ import com.github.kb.wxshop.entity.GoodsWithNumber;
 import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.wxshop.generate.Goods;
+import com.github.kb.wxshop.generate.Shop;
 import com.github.kb.wxshop.generate.ShopMapper;
 import com.github.kb.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,43 +37,47 @@ public class OrderService {
     private UserMapper userMapper;
     private GoodsService goodsService;
     private ShopMapper shopMapper;
-    private SqlSessionFactory sqlSessionFactory;
     private GoodsStockMapper goodsStockMapper;
 
     @Autowired
     public OrderService(UserMapper userMapper,
                         GoodsService goodsService,
                         ShopMapper shopMapper,
-                        SqlSessionFactory sqlSessionFactory,
                         GoodsStockMapper goodsStockMapper) {
         this.userMapper = userMapper;
         this.goodsService = goodsService;
         this.shopMapper = shopMapper;
-        this.sqlSessionFactory = sqlSessionFactory;
         this.goodsStockMapper = goodsStockMapper;
     }
 
     public OrderResponse createOrder(OrderInfo orderInfo, Long userId) {
 
-        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo);
+        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo.getGoods());
 
         Order order = createOrderViaRpc(orderInfo, userId, idToGoodsMap);
 
-        return generateResponse(orderInfo, idToGoodsMap, order);
+        return generateResponse(order, idToGoodsMap, orderInfo.getGoods());
     }
 
 
-    private OrderResponse generateResponse(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap, Order order) {
-        Order createdOrder = orderRpcService.createOrder(orderInfo, order);
-        OrderResponse response = new OrderResponse(createdOrder);
-        Long shopId = new ArrayList<>(idToGoodsMap.values()).get(0).getShopId();
-        response.setShop(shopMapper.selectByPrimaryKey(shopId));
-        response.setGoods(orderInfo.getGoods()
-                .stream().map(goods -> toGoodsWithNumber(goods, idToGoodsMap))
-                .collect(toList()));
+    /**
+     * 获取ID到商品的映射
+     *
+     * @param goodsInfo
+     * @return
+     */
+    private Map<Long, Goods> getIdToGoodsMap(List<GoodsInfo> goodsInfo) {
+        if (goodsInfo.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        List<Long> goodsId = goodsInfo
+                .stream()
+                .map(GoodsInfo::getId)
+                .collect(toList());
 
-        return response;
+        return goodsService.getIdToGoodsMap(goodsId);
     }
+
 
     /**
      * 通过RPC创建订单
@@ -83,47 +89,55 @@ public class OrderService {
      */
     private Order createOrderViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
         Order order = new Order();
-        order.setId(userId);
+        order.setUserId(userId);
         order.setStatus(DataStatus.PENDING.getName());
         order.setAddress(userMapper.selectByPrimaryKey(userId).getAddress());
         order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
         return order;
     }
 
-    /**
-     * 获取ID到商品的映射
-     *
-     * @param orderInfo
-     * @return
-     */
-    private Map<Long, Goods> getIdToGoodsMap(OrderInfo orderInfo) {
-        List<Long> goodsId = orderInfo.getGoods()
-                .stream()
-                .map(GoodsInfo::getId)
-                .collect(toList());
+    private OrderResponse generateResponse(Order createdOrder, Map<Long, Goods> idToGoodsMap, List<GoodsInfo> goodsInfo) {
+        OrderResponse response = new OrderResponse(createdOrder);
+        Long shopId = new ArrayList<>(idToGoodsMap.values()).get(0).getShopId();
+        response.setShop(shopMapper.selectByPrimaryKey(shopId));
+        response.setGoods(goodsInfo.stream().map(goods -> toGoodsWithNumber(goods, idToGoodsMap)).collect(toList()));
 
-        return goodsService.getIdToGoodsMap(goodsId);
+        return response;
     }
 
-    /**
-     * 扣减库存
-     *
-     * @param orderInfo
-     * @return 若全部扣减成功 返回true 否则返回false
-     */
-    private boolean deductStock(OrderInfo orderInfo) {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(false)) {
-            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
-                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
-                    LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId() + ",数量:" + goodsInfo.getNumber());
-                    sqlSession.rollback();
-                    return false;
-                }
+
+
+//    /**
+//     * 扣减库存
+//     *
+//     * @param orderInfo
+//     * @return 若全部扣减成功 返回true 否则返回false
+//     */
+//    private boolean deductStock(OrderInfo orderInfo) {
+//        try (SqlSession sqlSession = sqlSessionFactory.openSession(false)) {
+//            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+//                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
+//                    LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId() + ",数量:" + goodsInfo.getNumber());
+//                    sqlSession.rollback();
+//                    return false;
+//                }
+//            }
+//            sqlSession.commit();
+//            return true;
+//        }
+//    }
+
+    // 使用mybatis-spring的事务管理
+    @Transactional
+    public void deductStock(OrderInfo orderInfo) {
+        for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+            if (goodsStockMapper.deductStock(goodsInfo) < 0) {
+                LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId() + ",数量:" + goodsInfo.getNumber());
+                throw HttpException.gone("扣减库存失败!");
             }
-            sqlSession.commit();
-            return true;
         }
     }
+
 
     private GoodsWithNumber toGoodsWithNumber(GoodsInfo goodsInfo, Map<Long, Goods> idToGoodsMap) {
         GoodsWithNumber ret = new GoodsWithNumber(idToGoodsMap.get(goodsInfo.getId()));
@@ -150,4 +164,31 @@ public class OrderService {
         }
         return result;
     }
+
+    public RpcOrderGoods doGetOrderById(long userId, long orderId) {
+        RpcOrderGoods orderInDatabase = orderRpcService.getOrderById(orderId);
+        if (orderInDatabase == null) {
+            throw HttpException.notFound("订单未找到: " + orderId);
+        }
+        Shop shop = shopMapper.selectByPrimaryKey(orderInDatabase.getOrder().getShopId());
+        if (shop == null) {
+            throw HttpException.notFound("店铺未找到: " + orderInDatabase.getOrder().getShopId());
+        }
+
+        if (shop.getOwnerUserId() != userId && orderInDatabase.getOrder().getUserId() != userId) {
+            throw HttpException.forbidden("无权访问！");
+        }
+        return orderInDatabase;
+    }
+
+    public OrderResponse getOrderById(long userId, long orderId) {
+        return toOrderResponse(doGetOrderById(userId, orderId));
+    }
+
+    private OrderResponse toOrderResponse(RpcOrderGoods rpcOrderGoods) {
+        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
+        return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
+    }
+
+
 }

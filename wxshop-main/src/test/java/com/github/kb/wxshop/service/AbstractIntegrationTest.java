@@ -106,6 +106,11 @@ public class AbstractIntegrationTest {
         public <T> T asJsonObject(TypeReference<T> typeReference) throws JsonProcessingException {
             return objectMapper.readValue(body, typeReference);
         }
+
+        HttpResponse assertOkStatusCode() {
+            Assertions.assertTrue(code >= 200 && code < 300, "" + code + ": " + body);
+            return this;
+        }
     }
 
     private HttpRequest createRequest(String url, String httpMethod) {

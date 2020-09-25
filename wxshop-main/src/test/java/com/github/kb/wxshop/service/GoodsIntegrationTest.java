@@ -57,8 +57,4 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
         Assertions.assertEquals("ok", goodsInResponse.getData().getStatus());
     }
 
-    @Test
-    public void testDeleteGoods() {
-
-    }
 }
