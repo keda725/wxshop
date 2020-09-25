@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.service;
 
-import com.github.kb.api.DataStatus;
+import com.github.kb.api.data.DataStatus;
 import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.*;
 import com.github.kb.wxshop.generate.*;

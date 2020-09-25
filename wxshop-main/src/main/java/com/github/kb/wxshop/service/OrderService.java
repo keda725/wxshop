@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.service;
 
-import com.github.kb.api.DataStatus;
+import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.api.data.OrderInfo;
 import com.github.kb.api.data.RpcOrderGoods;

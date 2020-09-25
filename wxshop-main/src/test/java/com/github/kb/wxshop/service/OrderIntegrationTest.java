@@ -2,7 +2,7 @@ package com.github.kb.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.kb.api.DataStatus;
+import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.data.GoodsInfo;
 import com.github.kb.api.data.OrderInfo;
 import com.github.kb.api.generate.Order;

@@ -1,6 +1,6 @@
 package com.github.kb.order.service;
 
-import com.github.kb.api.DataStatus;
+import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.data.OrderInfo;
 import com.github.kb.api.generate.Order;
 import com.github.kb.api.generate.OrderMapper;

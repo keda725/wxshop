@@ -1,4 +1,4 @@
-package com.github.kb.api;
+package com.github.kb.api.data;
 
 public enum  DataStatus {
     OK(),
