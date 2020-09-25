@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.wxshop.entity.PageResponse;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.service.GoodsService;

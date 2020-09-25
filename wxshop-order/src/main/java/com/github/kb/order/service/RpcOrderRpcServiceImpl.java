@@ -1,20 +1,22 @@
 package com.github.kb.order.service;
 
 import com.github.kb.api.HttpException;
-import com.github.kb.api.data.DataStatus;
-import com.github.kb.api.data.GoodsInfo;
-import com.github.kb.api.data.OrderInfo;
-import com.github.kb.api.data.RpcOrderGoods;
-import com.github.kb.api.generate.Order;
-import com.github.kb.api.generate.OrderMapper;
+import com.github.kb.api.data.*;
+import com.github.kb.api.generate.*;
 import com.github.kb.api.rpc.OrderRpcService;
 import com.github.kb.order.mapper.MyOrderMapper;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
+
+import static com.github.kb.api.data.DataStatus.*;
+import static java.util.stream.Collectors.*;
 
 @Service(version = "${wxshop.orderservice.version}")
 public class RpcOrderRpcServiceImpl implements OrderRpcService {
@@ -23,6 +25,9 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
 
     @Autowired
     private MyOrderMapper myOrderMapper;
+
+    @Autowired
+    private OrderGoodsMapper orderGoodsMapper;
 
 
     @Override
@@ -45,7 +50,7 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
 
         List<GoodsInfo> goodsInfo = myOrderMapper.getGoodsInfoOfOrder(orderId);
 
-        order.setStatus(DataStatus.DELETED.getName());
+        order.setStatus(DELETED.getName());
         order.setUpdatedAt(new Date());
         orderMapper.updateByPrimaryKey(order);
         RpcOrderGoods result = new RpcOrderGoods();
@@ -59,8 +64,71 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
         return null;
     }
 
+    @Override
+    public PageResponse<RpcOrderGoods> getOrder(long userId,
+                                                Integer pageNum,
+                                                Integer pageSize,
+                                                DataStatus status) {
+        OrderExample countByStatus = new OrderExample();
+        setStatus(countByStatus, status);
+        int count = (int) orderMapper.countByExample(countByStatus);
+
+
+        OrderExample pagedOrder = new OrderExample();
+        pagedOrder.setOffset((pageNum - 1) * pageSize);
+        pagedOrder.setLimit(pageNum);
+        setStatus(pagedOrder, status).andUserIdEqualTo(userId);
+        List<Order> orders = orderMapper.selectByExample(pagedOrder);
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(toList());
+
+        OrderGoodsExample selectByOrderIds = new OrderGoodsExample();
+        selectByOrderIds.createCriteria().andOrderIdIn(orderIds);
+        List<OrderGoods> orderGoods = orderGoodsMapper.selectByExample(selectByOrderIds);
+
+
+        int totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
+
+        Map<Long, List<OrderGoods>> orderIdToGoodsMap = orderGoods
+                .stream()
+                .collect(Collectors.groupingBy(OrderGoods::getGoodsId, toList()));
+
+        List<RpcOrderGoods> rpcOrderGoods = orders
+                .stream()
+                .map(order -> toRpcOrderGoods(order, orderIdToGoodsMap))
+                .collect(toList());
+        return PageResponse.pagedata(pageNum, pageSize, totalPage, rpcOrderGoods);
+
+    }
+
+    private RpcOrderGoods toRpcOrderGoods(Order order, Map<Long, List<OrderGoods>> orderIdToGoodsMap) {
+        RpcOrderGoods result = new RpcOrderGoods();
+        result.setOrder(order);
+
+        List<GoodsInfo> goodsInfos = orderIdToGoodsMap
+                .getOrDefault(order.getId(), Collections.emptyList())
+                .stream().map(this::toGoodsInfo)
+                .collect(toList());
+        result.setGoods(goodsInfos);
+        return result;
+    }
+
+    private GoodsInfo toGoodsInfo(OrderGoods orderGoods) {
+        GoodsInfo result = new GoodsInfo();
+        result.setId(orderGoods.getGoodsId());
+        result.setNumber(orderGoods.getNumber().intValue());
+        return result;
+    }
+
+    private OrderExample.Criteria setStatus(OrderExample orderExample, DataStatus status) {
+        if (status == null) {
+            return orderExample.createCriteria().andStatusNotEqualTo(DELETED.getName());
+        } else {
+            return orderExample.createCriteria().andStatusNotEqualTo(status.getName());
+        }
+    }
+
     private void insertOrder(Order order) {
-        order.setStatus(DataStatus.PENDING.getName());
+        order.setStatus(PENDING.getName());
 
         verify(() -> order.getUserId() == null, "userId不能为空");
         verify(() -> order.getTotalPrice() == null || order.getTotalPrice().doubleValue() < 0, "totalPrice非法");

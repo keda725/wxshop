@@ -1,6 +1,7 @@
 package com.github.kb.wxshop.service;
 
 import com.github.kb.api.HttpException;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.api.data.DataStatus;
 import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.*;
@@ -54,7 +55,7 @@ public class ShoppingCartService {
 
 
         int totalPage = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize + 1;
-        return PageResponse.pageData(pageNum, pageSize, totalPage, pagedDate);
+        return PageResponse.pagedata(pageNum, pageSize, totalPage, pagedDate);
 
     }
 

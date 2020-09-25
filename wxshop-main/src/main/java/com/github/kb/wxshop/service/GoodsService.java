@@ -2,7 +2,7 @@ package com.github.kb.wxshop.service;
 
 import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.HttpException;
-import com.github.kb.wxshop.entity.PageResponse;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.generate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class GoodsService {
         page.setLimit(pageSize);
         page.setOffset((pageNum - 1) * pageSize);
         List<Goods> pageGoods = goodsMapper.selectByExample(page);
-        return PageResponse.pageData(pageNum, pageSize, totalPage, pageGoods);
+        return PageResponse.pagedata(pageNum, pageSize, totalPage, pageGoods);
     }
 
     private int countGoods(Integer shopId) {

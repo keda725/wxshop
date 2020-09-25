@@ -10,6 +10,7 @@ import com.github.kb.wxshop.dao.GoodsStockMapper;
 import com.github.kb.wxshop.entity.GoodsWithNumber;
 import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.generate.Shop;
 import com.github.kb.wxshop.generate.ShopMapper;
@@ -173,5 +174,26 @@ public class OrderService {
         RpcOrderGoods rpcOrderGoods = orderRpcService.deleteOrder(orderId, userId);
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
         return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
+    }
+
+    public PageResponse<OrderResponse> getOrder(long userId,Integer pageNum, Integer pageSize, DataStatus status) {
+        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId,pageNum, pageSize, status);
+        List<GoodsInfo> goodIds = rpcOrderGoods
+                .getData()
+                .stream()
+                .map(RpcOrderGoods::getGoods)
+                .flatMap(List::stream)
+                .collect(toList());
+        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(goodIds);
+
+        List<OrderResponse> orders = rpcOrderGoods.getData()
+                .stream()
+                .map(order -> generateResponse(order.getOrder(), idToGoodsMap, order.getGoods()))
+                .collect(toList());
+
+        return PageResponse.pagedata(rpcOrderGoods.getPageNum(),
+                rpcOrderGoods.getPageSize(),
+                rpcOrderGoods.getTotalPage(),
+                orders);
     }
 }

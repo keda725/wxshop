@@ -2,7 +2,7 @@ package com.github.kb.wxshop.service;
 
 import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.HttpException;
-import com.github.kb.wxshop.entity.PageResponse;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.generate.Shop;
 import com.github.kb.wxshop.generate.ShopExample;
 import com.github.kb.wxshop.generate.ShopMapper;
@@ -35,7 +35,7 @@ public class ShopService {
 
         List<Shop> pageShops = shopMapper.selectByExample(pageCondition);
 
-        return PageResponse.pageData(pageNum, pageSize, totalPage, pageShops);
+        return PageResponse.pagedata(pageNum, pageSize, totalPage, pageShops);
     }
 
     public Shop createShop(Shop shop, Long creatorId) {

@@ -1,7 +1,10 @@
 package com.github.kb.wxshop.controller;
 
+import com.github.kb.api.HttpException;
+import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.data.OrderInfo;
 import com.github.kb.wxshop.entity.OrderResponse;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.service.OrderService;
 import com.github.kb.wxshop.service.UserContext;
@@ -82,7 +85,14 @@ public class OrderController {
      * }
      */
     // @formatter:on
-    public void getOrder() {
+    @GetMapping("/order")
+    public PageResponse<OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
+                                                @RequestParam("pageSize") Integer pageSize,
+                                                @RequestParam(value = "status", required = false) String status) {
+        if (status != null && DataStatus.formStatus(status) == null) {
+            throw HttpException.badRequest("非法status" + status);
+        }
+        return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.formStatus(status));
     }
 
     // @formatter:off

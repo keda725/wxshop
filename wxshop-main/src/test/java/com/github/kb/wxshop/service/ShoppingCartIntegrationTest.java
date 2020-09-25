@@ -2,6 +2,7 @@ package com.github.kb.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.WxshopApplication;
 import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.*;

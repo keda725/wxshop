@@ -1,14 +1,15 @@
-package com.github.kb.wxshop.entity;
+package com.github.kb.api.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PageResponse<T> {
+public class PageResponse<T> implements Serializable {
     private int pageNum;
     private int pageSize;
     private int totalPage;
     private List<T> data;
 
-    public static <T> PageResponse<T> pageData(int pageNum, int pageSize, int totalPage, List<T> data) {
+    public static <T> PageResponse<T> pagedata(int pageNum, int pageSize, int totalPage, List<T> data) {
         PageResponse<T> result = new PageResponse<>();
         result.setPageNum(pageNum);
         result.setPageSize(pageSize);

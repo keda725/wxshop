@@ -12,4 +12,12 @@ public enum  DataStatus {
     public String getName() {
         return name().toLowerCase();
     }
+
+    public static DataStatus formStatus(String name) {
+        try {
+            return DataStatus.valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 }
