@@ -1,7 +1,6 @@
 package com.github.kb.wxshop.controller;
 
 import com.github.kb.api.data.OrderInfo;
-import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.service.OrderService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -163,19 +161,13 @@ public class OrderController {
     /**
      *
      * @param orderInfo
-     * @param response
      * @return 响应
      */
     // @formatter:on
     @PostMapping("/order")
-    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo, HttpServletResponse response) {
-        try {
+    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
             orderService.deductStock(orderInfo);
             return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
     }
 
     // @formatter:off

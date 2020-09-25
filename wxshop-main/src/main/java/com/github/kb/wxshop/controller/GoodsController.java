@@ -1,6 +1,5 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
@@ -66,17 +65,17 @@ public class GoodsController {
      * }
      */
     /**
-     *
-     * @param pageNum 页码
+     * @param pageNum  页码
      * @param pageSize 分页容量
-     * @param shopId 商店ID
+     * @param shopId   商店ID
      * @return PageResponse
      */
     // @formatter:on
     @GetMapping("/goods")
-    public @ResponseBody PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
-                                                      @RequestParam("pageSize") Integer pageSize,
-                                                      @RequestParam(value = "shopId", required = false) Integer shopId) {
+    public @ResponseBody
+    PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                                 @RequestParam("pageSize") Integer pageSize,
+                                 @RequestParam(value = "shopId", required = false) Integer shopId) {
         return goodsService.getGoods(pageNum, pageSize, shopId);
 
     }
@@ -134,21 +133,18 @@ public class GoodsController {
      */
 
     /**
-     * @param goods    goods to be created
-     * @param response the HTTP response
+     *
+     * @param goods goods to be created
+     * @param response response
      * @return the newly created goods
      */
+
     // @formatter:on
     @PostMapping("/goods")
     public Response<Goods> createdGoods(@RequestBody Goods goods, HttpServletResponse response) {
         clean(goods);
         response.setStatus(HttpServletResponse.SC_CREATED);
-        try {
-            return Response.of(goodsService.createGoods(goods));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+        return Response.of(goodsService.createGoods(goods));
     }
 
     private void clean(Goods goods) {
@@ -202,20 +198,14 @@ public class GoodsController {
      * }
      */
     /**
-     *
      * @param goods 商品
-     * @param response http response
      * @return Response
      */
     // @formatter:on
     @PatchMapping("/update/{id}")
-    public Response<Goods> updatedGoods(Goods goods, HttpServletResponse response) {
-        try {
-            return Response.of(goodsService.updateGoods(goods));
-        } catch (HttpException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        }
+    public Response<Goods> updatedGoods(Goods goods) {
+
+        return Response.of(goodsService.updateGoods(goods));
 
     }
 
@@ -266,12 +256,7 @@ public class GoodsController {
     // @formatter:on
     @DeleteMapping("/goods/{id}")
     public Response<Goods> deleteGoods(@PathVariable("id") Long goodsId, HttpServletResponse response) {
-        try {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            return Response.of(goodsService.deleteGoodsById(goodsId));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        return Response.of(goodsService.deleteGoodsById(goodsId));
     }
 }

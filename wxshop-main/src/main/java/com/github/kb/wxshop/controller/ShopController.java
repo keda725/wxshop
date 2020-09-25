@@ -1,6 +1,5 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.wxshop.entity.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Shop;
@@ -64,7 +63,6 @@ public class ShopController {
      * }
      */
     /**
-     *
      * @param pageNum
      * @param pageSize
      * @return 店铺列表
@@ -114,6 +112,7 @@ public class ShopController {
      */
     /**
      * 创建店铺
+     *
      * @param shop
      * @param response
      * @return 新创建的店铺
@@ -165,24 +164,16 @@ public class ShopController {
      * }
      */
     /**
-     *
      * @param id
      * @param shop
-     * @param response
      * @return 更新后的店铺
      */
     // @formatter:on
     @PatchMapping("/shop/{id}")
     public Response<Shop> updateShop(@PathVariable("id") Long id,
-                                     @RequestBody Shop shop,
-                                     HttpServletResponse response) {
+                                     @RequestBody Shop shop) {
         shop.setId(id);
-        try {
-            return Response.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+        return Response.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
     }
 
     // @formatter:off
@@ -222,17 +213,11 @@ public class ShopController {
      */
     /**
      * @param shopId
-     * @param response
      * @return 删除店铺
      */
     // @formatter:on
     @DeleteMapping("/shop/{id}")
-    public Response<Shop> deleteShop(@PathVariable("id") Long shopId, HttpServletResponse response) {
-        try {
-            return Response.of(shopService.deleteShop(shopId, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+    public Response<Shop> deleteShop(@PathVariable("id") Long shopId) {
+        return Response.of(shopService.deleteShop(shopId, UserContext.getCurrentUser().getId()));
     }
 }
