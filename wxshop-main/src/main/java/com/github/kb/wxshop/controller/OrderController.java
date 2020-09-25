@@ -6,10 +6,7 @@ import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.service.OrderService;
 import com.github.kb.wxshop.service.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -159,15 +156,14 @@ public class OrderController {
      *     }
      */
     /**
-     *
      * @param orderInfo
      * @return 响应
      */
     // @formatter:on
     @PostMapping("/order")
     public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
-            orderService.deductStock(orderInfo);
-            return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
+        orderService.deductStock(orderInfo);
+        return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
     }
 
     // @formatter:off
@@ -297,7 +293,10 @@ public class OrderController {
      * }
      */
     // @formatter:on
-    public void deleteOrder() {
+    @DeleteMapping("/order/{id}")
+    public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
+        return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
+
     }
 }
 

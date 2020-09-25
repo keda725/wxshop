@@ -1,7 +1,7 @@
 package com.github.kb.wxshop.service;
 
 import com.github.kb.api.data.DataStatus;
-import com.github.kb.wxshop.entity.HttpException;
+import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.PageResponse;
 import com.github.kb.wxshop.generate.*;
 import org.junit.jupiter.api.AfterEach;

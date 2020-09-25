@@ -5,6 +5,15 @@ import java.util.List;
 
 public class OrderInfo implements Serializable {
     private List<GoodsInfo> goods;
+    private long orderId;
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
 
     public List<GoodsInfo> getGoods() {
         return goods;

@@ -8,5 +8,8 @@ public interface OrderRpcService {
 
     Order createOrder(OrderInfo orderInfo, Order order);
 
+    RpcOrderGoods deleteOrder(long orderId, long userId);
+
     RpcOrderGoods getOrderById(long orderId);
+
 }

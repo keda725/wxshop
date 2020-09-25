@@ -1,6 +1,6 @@
 package com.github.kb.wxshop.controller;
 
-import com.github.kb.wxshop.entity.HttpException;
+import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.Response;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

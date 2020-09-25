@@ -8,7 +8,7 @@ import com.github.kb.api.generate.Order;
 import com.github.kb.api.rpc.OrderRpcService;
 import com.github.kb.wxshop.dao.GoodsStockMapper;
 import com.github.kb.wxshop.entity.GoodsWithNumber;
-import com.github.kb.wxshop.entity.HttpException;
+import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.generate.Shop;
@@ -105,28 +105,6 @@ public class OrderService {
         return response;
     }
 
-
-
-//    /**
-//     * 扣减库存
-//     *
-//     * @param orderInfo
-//     * @return 若全部扣减成功 返回true 否则返回false
-//     */
-//    private boolean deductStock(OrderInfo orderInfo) {
-//        try (SqlSession sqlSession = sqlSessionFactory.openSession(false)) {
-//            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
-//                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
-//                    LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId() + ",数量:" + goodsInfo.getNumber());
-//                    sqlSession.rollback();
-//                    return false;
-//                }
-//            }
-//            sqlSession.commit();
-//            return true;
-//        }
-//    }
-
     // 使用mybatis-spring的事务管理
     @Transactional
     public void deductStock(OrderInfo orderInfo) {
@@ -191,4 +169,9 @@ public class OrderService {
     }
 
 
+    public OrderResponse deleteOrder(long orderId, long userId) {
+        RpcOrderGoods rpcOrderGoods = orderRpcService.deleteOrder(orderId, userId);
+        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
+        return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
+    }
 }

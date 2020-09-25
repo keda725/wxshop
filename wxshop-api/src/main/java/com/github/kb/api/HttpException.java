@@ -1,4 +1,4 @@
-package com.github.kb.wxshop.entity;
+package com.github.kb.api;
 
 import org.springframework.http.HttpStatus;
 

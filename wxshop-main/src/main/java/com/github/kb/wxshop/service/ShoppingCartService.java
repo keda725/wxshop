@@ -1,5 +1,6 @@
 package com.github.kb.wxshop.service;
 
+import com.github.kb.api.HttpException;
 import com.github.kb.api.data.DataStatus;
 import com.github.kb.wxshop.controller.ShoppingCartController;
 import com.github.kb.wxshop.entity.*;
