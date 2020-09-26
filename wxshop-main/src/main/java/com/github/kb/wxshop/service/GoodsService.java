@@ -63,7 +63,7 @@ public class GoodsService {
         page.setLimit(pageSize);
         page.setOffset((pageNum - 1) * pageSize);
         List<Goods> pageGoods = goodsMapper.selectByExample(page);
-        return PageResponse.pagedata(pageNum, pageSize, totalPage, pageGoods);
+        return PageResponse.pagedData(pageNum, pageSize, totalPage, pageGoods);
     }
 
     private int countGoods(Integer shopId) {

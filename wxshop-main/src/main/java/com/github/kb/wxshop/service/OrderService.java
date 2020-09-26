@@ -11,7 +11,6 @@ import com.github.kb.wxshop.entity.GoodsWithNumber;
 import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.api.data.PageResponse;
-import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.generate.Shop;
 import com.github.kb.wxshop.generate.ShopMapper;
@@ -170,7 +169,7 @@ public class OrderService {
                 .map(order -> generateResponse(order.getOrder(), idToGoodsMap, order.getGoods()))
                 .collect(toList());
 
-        return PageResponse.pagedata(rpcOrderGoods.getPageNum(),
+        return PageResponse.pagedData(rpcOrderGoods.getPageNum(),
                 rpcOrderGoods.getPageSize(),
                 rpcOrderGoods.getTotalPage(),
                 orders);

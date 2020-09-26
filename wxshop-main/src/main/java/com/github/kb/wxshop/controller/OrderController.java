@@ -245,12 +245,12 @@ public class OrderController {
      * }
      */
     // @formatter:on
-    @PatchMapping("/order")
-    public Response<OrderResponse> updateOrder(@RequestBody Order order) {
+    @RequestMapping(value = "/order/{id}", method = {RequestMethod.PATCH, RequestMethod.POST})
+    public Response<OrderResponse> updateOrder(@PathVariable("id") long id,@RequestBody Order order) {
         if (order.getExpressCompany() != null) {
-            return orderService.updateExpressInformation(order,UserContext.getCurrentUser().getId());
+            return Response.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
         } else {
-            return orderService.updateOrderStatus(order,UserContext.getCurrentUser().getId());
+            return Response.of(orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId()));
         }
 
     }
@@ -314,7 +314,6 @@ public class OrderController {
     @DeleteMapping("/order/{id}")
     public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
         return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
-
     }
 }
 

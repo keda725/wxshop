@@ -55,7 +55,7 @@ public class ShoppingCartService {
 
 
         int totalPage = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize + 1;
-        return PageResponse.pagedata(pageNum, pageSize, totalPage, pagedDate);
+        return PageResponse.pagedData(pageNum, pageSize, totalPage, pagedDate);
 
     }
 

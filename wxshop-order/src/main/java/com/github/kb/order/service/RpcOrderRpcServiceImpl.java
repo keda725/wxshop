@@ -96,7 +96,7 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
                 .stream()
                 .map(order -> toRpcOrderGoods(order, orderIdToGoodsMap))
                 .collect(toList());
-        return PageResponse.pagedata(pageNum, pageSize, totalPage, rpcOrderGoods);
+        return PageResponse.pagedData(pageNum, pageSize, totalPage, rpcOrderGoods);
 
     }
 

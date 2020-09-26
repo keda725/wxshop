@@ -35,7 +35,7 @@ public class ShopService {
 
         List<Shop> pageShops = shopMapper.selectByExample(pageCondition);
 
-        return PageResponse.pagedata(pageNum, pageSize, totalPage, pageShops);
+        return PageResponse.pagedData(pageNum, pageSize, totalPage, pageShops);
     }
 
     public Shop createShop(Shop shop, Long creatorId) {
