@@ -10,9 +10,11 @@ public interface OrderRpcService {
 
     Order createOrder(OrderInfo orderInfo, Order order);
 
+    Order getOrderById(long orderId);
+
     RpcOrderGoods deleteOrder(long orderId, long userId);
 
-    RpcOrderGoods getOrderById(long orderId);
-
     PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status);
+
+    RpcOrderGoods updateOrder(Order order);
 }

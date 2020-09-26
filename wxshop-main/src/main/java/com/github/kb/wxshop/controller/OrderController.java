@@ -3,6 +3,7 @@ package com.github.kb.wxshop.controller;
 import com.github.kb.api.HttpException;
 import com.github.kb.api.data.DataStatus;
 import com.github.kb.api.data.OrderInfo;
+import com.github.kb.api.generate.Order;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.api.data.PageResponse;
 import com.github.kb.wxshop.entity.Response;
@@ -244,7 +245,14 @@ public class OrderController {
      * }
      */
     // @formatter:on
-    public void updateOrder() {
+    @PatchMapping("/order")
+    public Response<OrderResponse> updateOrder(@RequestBody Order order) {
+        if (order.getExpressCompany() != null) {
+            return orderService.updateExpressInformation(order,UserContext.getCurrentUser().getId());
+        } else {
+            return orderService.updateOrderStatus(order,UserContext.getCurrentUser().getId());
+        }
+
     }
 
     // @formatter:off

@@ -11,6 +11,7 @@ import com.github.kb.wxshop.entity.GoodsWithNumber;
 import com.github.kb.api.HttpException;
 import com.github.kb.wxshop.entity.OrderResponse;
 import com.github.kb.api.data.PageResponse;
+import com.github.kb.wxshop.entity.Response;
 import com.github.kb.wxshop.generate.Goods;
 import com.github.kb.wxshop.generate.Shop;
 import com.github.kb.wxshop.generate.ShopMapper;
@@ -144,24 +145,9 @@ public class OrderService {
         return result;
     }
 
-    public RpcOrderGoods doGetOrderById(long userId, long orderId) {
-        RpcOrderGoods orderInDatabase = orderRpcService.getOrderById(orderId);
-        if (orderInDatabase == null) {
-            throw HttpException.notFound("订单未找到: " + orderId);
-        }
-        Shop shop = shopMapper.selectByPrimaryKey(orderInDatabase.getOrder().getShopId());
-        if (shop == null) {
-            throw HttpException.notFound("店铺未找到: " + orderInDatabase.getOrder().getShopId());
-        }
 
-        if (shop.getOwnerUserId() != userId && orderInDatabase.getOrder().getUserId() != userId) {
-            throw HttpException.forbidden("无权访问！");
-        }
-        return orderInDatabase;
-    }
-
-    public OrderResponse getOrderById(long userId, long orderId) {
-        return toOrderResponse(doGetOrderById(userId, orderId));
+    public OrderResponse deleteOrder(long orderId, long userId) {
+        return toOrderResponse(orderRpcService.deleteOrder(orderId, userId));
     }
 
     private OrderResponse toOrderResponse(RpcOrderGoods rpcOrderGoods) {
@@ -169,15 +155,8 @@ public class OrderService {
         return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
     }
 
-
-    public OrderResponse deleteOrder(long orderId, long userId) {
-        RpcOrderGoods rpcOrderGoods = orderRpcService.deleteOrder(orderId, userId);
-        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
-        return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
-    }
-
-    public PageResponse<OrderResponse> getOrder(long userId,Integer pageNum, Integer pageSize, DataStatus status) {
-        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId,pageNum, pageSize, status);
+    public PageResponse<OrderResponse> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId, pageNum, pageSize, status);
         List<GoodsInfo> goodIds = rpcOrderGoods
                 .getData()
                 .stream()
@@ -195,5 +174,40 @@ public class OrderService {
                 rpcOrderGoods.getPageSize(),
                 rpcOrderGoods.getTotalPage(),
                 orders);
+    }
+
+    public OrderResponse updateExpressInformation(Order order, long userId) {
+        Order orderInDatabase = orderRpcService.getOrderById(order.getId());
+        if (orderInDatabase == null) {
+            throw HttpException.notFound("订单未找到：" + order.getId());
+        }
+        Shop shop = shopMapper.selectByPrimaryKey(orderInDatabase.getShopId());
+        if (shop == null) {
+            throw HttpException.notFound("店铺未找到：" + orderInDatabase.getShopId());
+        }
+
+        if (shop.getOwnerUserId() != userId) {
+            throw HttpException.forbidden("无权访问!");
+        }
+        Order copy = new Order();
+        copy.setId(order.getId());
+        copy.setExpressId(order.getExpressId());
+        copy.setExpressCompany(order.getExpressCompany());
+        return toOrderResponse(orderRpcService.updateOrder(copy));
+    }
+
+    public OrderResponse updateOrderStatus(Order order, Long userId) {
+        Order orderInDatabase = orderRpcService.getOrderById(order.getId());
+        if (orderInDatabase == null) {
+            throw HttpException.notFound("订单未找到：" + order.getId());
+        }
+
+        if (orderInDatabase.getUserId() != userId) {
+            throw HttpException.forbidden("无权访问!");
+        }
+
+        Order copy = new Order();
+        copy.setStatus(order.getStatus());
+        return toOrderResponse(orderRpcService.updateOrder(copy));
     }
 }
