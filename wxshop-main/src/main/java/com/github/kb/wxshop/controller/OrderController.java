@@ -85,6 +85,14 @@ public class OrderController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     * 获取订单
+     *
+     * @param pageNum  页数
+     * @param pageSize 条数
+     * @param status   状态
+     * @return 响应
+     */
     // @formatter:on
     @GetMapping("/order")
     public PageResponse<OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
@@ -170,6 +178,12 @@ public class OrderController {
      * @param orderInfo
      * @return 响应
      */
+    /**
+     * 创建订单
+     *
+     * @param orderInfo orderInfo
+     * @return 响应
+     */
     // @formatter:on
     @PostMapping("/order")
     public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
@@ -244,9 +258,16 @@ public class OrderController {
      * "message": "Not Found"
      * }
      */
+    /**
+     * 更新订单
+     *
+     * @param id    订单编号
+     * @param order 订单
+     * @return 响应
+     */
     // @formatter:on
     @RequestMapping(value = "/order/{id}", method = {RequestMethod.PATCH, RequestMethod.POST})
-    public Response<OrderResponse> updateOrder(@PathVariable("id") long id,@RequestBody Order order) {
+    public Response<OrderResponse> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
         if (order.getExpressCompany() != null) {
             return Response.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
         } else {
@@ -309,6 +330,12 @@ public class OrderController {
      * {
      * "message": "Not Found"
      * }
+     */
+    /**
+     * 删除订单
+     *
+     * @param orderId 订单编号
+     * @return 响应
      */
     // @formatter:on
     @DeleteMapping("/order/{id}")
