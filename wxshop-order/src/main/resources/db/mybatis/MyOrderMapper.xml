@@ -2,21 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.kb.order.mapper.MyOrderMapper">
     <insert id="insertOrders" parameterType="OrderInfo">
-        insert into `ORDER_GOODS`(GOODS_ID, ORDER_ID NUMBER)
+        insert into `ORDER_GOODS`(GOODS_ID, ORDER_ID, NUMBER)
         values
         <foreach collection="goods" item="item" separator=",">
-            (#{item.id},#{id},#{item.number})
+            (#{item.id},#{orderId},#{item.number})
         </foreach>
     </insert>
 
-    <select id="getGoodsInfoOfOrder" parameterType="long" resultType="Goods">
+    <select id="getGoodsInfoOfOrder" parameterType="long" resultType="GoodsInfo">
         SELECT GOODS_ID as id,
                 NUMBER AS number
                 FROM ORDER_GOODS
                 WHERE ORDER_ID = #{id}
     </select>
     <update id="updateById" parameterType="Order">
-        UPDATE `ORDER`
+        UPDATE `ORDER_TABLE`
         SET
             UPDATED_AT = now()
         <if test="expressCompany != null">

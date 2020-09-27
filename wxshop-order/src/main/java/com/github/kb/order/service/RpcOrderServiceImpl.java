@@ -19,28 +19,31 @@ import static com.github.kb.api.data.DataStatus.*;
 import static java.util.stream.Collectors.*;
 
 @Service(version = "${wxshop.orderservice.version}")
-public class RpcOrderRpcServiceImpl implements OrderRpcService {
-    @Autowired
+public class RpcOrderServiceImpl implements OrderRpcService {
     private OrderMapper orderMapper;
 
-    @Autowired
     private MyOrderMapper myOrderMapper;
 
-    @Autowired
     private OrderGoodsMapper orderGoodsMapper;
 
+    @Autowired
+    public RpcOrderServiceImpl(OrderMapper orderMapper, MyOrderMapper myOrderMapper, OrderGoodsMapper orderGoodsMapper) {
+        this.orderMapper = orderMapper;
+        this.myOrderMapper = myOrderMapper;
+        this.orderGoodsMapper = orderGoodsMapper;
+    }
 
     @Override
     public Order createOrder(OrderInfo orderInfo, Order order) {
         insertOrder(order);
         orderInfo.setOrderId(order.getId());
         myOrderMapper.insertOrders(orderInfo);
-        return null;
+        return order;
     }
 
     @Override
     public RpcOrderGoods deleteOrder(long orderId, long userId) {
-        Order order = orderMapper.selectByPrimaryKey(userId);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
         if (order == null) {
             throw HttpException.notFound("订单未找到：" + orderId);
         }
@@ -70,7 +73,7 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
                                                 Integer pageSize,
                                                 DataStatus status) {
         OrderExample countByStatus = new OrderExample();
-        setStatus(countByStatus, status);
+        setStatus(countByStatus, status).andUserIdEqualTo(userId);
         int count = (int) orderMapper.countByExample(countByStatus);
 
 
@@ -78,25 +81,35 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
         pagedOrder.setOffset((pageNum - 1) * pageSize);
         pagedOrder.setLimit(pageNum);
         setStatus(pagedOrder, status).andUserIdEqualTo(userId);
-        List<Order> orders = orderMapper.selectByExample(pagedOrder);
-        List<Long> orderIds = orders.stream().map(Order::getId).collect(toList());
 
-        OrderGoodsExample selectByOrderIds = new OrderGoodsExample();
-        selectByOrderIds.createCriteria().andOrderIdIn(orderIds);
-        List<OrderGoods> orderGoods = orderGoodsMapper.selectByExample(selectByOrderIds);
+        List<Order> orders = orderMapper.selectByExample(pagedOrder);
+        List<OrderGoods> orderGoods = getOrderGoods(orders);
 
 
         int totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
 
         Map<Long, List<OrderGoods>> orderIdToGoodsMap = orderGoods
                 .stream()
-                .collect(Collectors.groupingBy(OrderGoods::getGoodsId, toList()));
+                .collect(Collectors.groupingBy(OrderGoods::getOrderId, toList()));
 
         List<RpcOrderGoods> rpcOrderGoods = orders
                 .stream()
                 .map(order -> toRpcOrderGoods(order, orderIdToGoodsMap))
                 .collect(toList());
         return PageResponse.pagedData(pageNum, pageSize, totalPage, rpcOrderGoods);
+
+    }
+
+    private List<OrderGoods> getOrderGoods(List<Order> orders) {
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(toList());
+
+        OrderGoodsExample selectByOrderIds = new OrderGoodsExample();
+        selectByOrderIds.createCriteria().andOrderIdIn(orderIds);
+        return orderGoodsMapper.selectByExample(selectByOrderIds);
 
     }
 
@@ -146,7 +159,7 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
         verify(() -> order.getAddress() == null, "address不能为空");
 
 
-        order.setAddress(null);
+        order.setExpressCompany(null);
         order.setExpressId(null);
         order.setCreatedAt(new Date());
         order.setUpdatedAt(new Date());
