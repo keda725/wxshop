@@ -201,7 +201,7 @@ public class OrderService {
             throw HttpException.notFound("订单未找到：" + order.getId());
         }
 
-        if (orderInDatabase.getUserId() != userId) {
+        if (!orderInDatabase.getUserId().equals(userId)) {
             throw HttpException.forbidden("无权访问!");
         }
 
