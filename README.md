@@ -1,141 +1,48 @@
-### 这是一个简单的微信商城web项目
-以下是这个项目完整的构建过程(自己太懒了，以后每次提交都要带着README,这里立个Flag ⛽️ 💪 )
+#### 部署指南
+这是一个分布式应用，分为两部分，二者之间使用Dubbo RPC通信
 
-1.添加依赖
+    主模块：负责处理HTTP请求（包括静态资源），更新商品、店铺、购物车信息
 
+    订单模块：负责订单模块。
 
+应用的依赖：
 
-```xml
-<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.3</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.2.8.RELEASE</version>
-        </dependency> 
-```
----
-2.数据库
-```xml
-       <plugin>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-maven-plugin</artifactId>
-            <version>6.5.5</version>
-       </plugin>
-```
-docker方式启动数据库
-```dockerfile
-docker run -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wxshop -p 3306:3306 -d mysql
+    Redis: 进行分布式登录状态维持
+    MySQL: 存储所有的数据
+    ZooKeeper: 作为Dubbo的注册中心
+    NGINX: 可选，如果希望实现多实例部署和负载均衡
+部署步骤
+```shell script
+docker run -d -v /path/to/wxshop-data:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wxshop --name=wxshop-mysql mysql
 ```
 
-参照官方文档的使用https://flywaydb.org/documentation/maven/ 
-```xml
-        <configuration>
-                <user>myUser</user>
-                <password>mySecretPwd</password>
-                <url>jdbc:mysql://localhost:3306/wxshop?useSSL=false&amp;allowPublicKeyRetrieval=true</url>
-        </configuration>
+```shell script
+docker run -p 6379:6379 -d redis
 ```
-创建文件夹 classpath:xxx/src/main/resources/db/migration/V1__CreateUser.sql 
-注意：是两个下划线__
-```sql
-CREATE TABLE `USER`(
-    `ID`            BIGINT   PRIMARY KEY  AUTO_INCREMENT ,
-    `NAME`          VARCHAR(100) ,
-    `TEL`           VARCHAR(20) UNIQUE ,
-    `AVATAR_URL`    VARCHAR(1024) ,
-    `ADDRESS`       VARCHAR(1024) ,
-    `CREATED_AT`    TIMESTAMP NOT NULL  DEFAULT NOW() ,
-    `UPDATED_AT`    TIMESTAMP NOT NULL  DEFAULT NOW()
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci;
+```shell script
+docker run -p 2181:2181 -d zookeeper
 ```
-然后使用命令行：mvn flyway:migrate 创建第一张User用户表
-
----
-3.Mybatis Generator
-
-依照官方文档：https://mybatis.org/generator/running/runningWithMaven.html
-```xml
-        <plugin>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-maven-plugin</artifactId>
-            <version>1.4.0</version>
-        </plugin>   
+等待半分钟，等容器启动完毕
+创建order数据库：
+```shell script
+docker exec -it wxshop-mysql mysql -uroot -proot -e 'create database if not exists `order`'
 ```
-创建application.yml配置文件和generatorConfig.xml。
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration
-        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-
-<generatorConfiguration>
-    <context id="wxshop" targetRuntime="MyBatis3">
-        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/wxshop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;characterEncoding=utf-8"
-                        userId="root"
-                        password="root">
-        </jdbcConnection>
-
-        <javaModelGenerator targetPackage="com.github.kb.wxshop.generate" targetProject="src/main/java">
-            <property name="enableSubPackages" value="true" />
-            <property name="trimStrings" value="true" />
-        </javaModelGenerator>
-
-        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="src/main/resources">
-            <property name="enableSubPackages" value="true" />
-        </sqlMapGenerator>
-
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.kb.wxshop.generate"  targetProject="src/main/java">
-            <property name="enableSubPackages" value="true" />
-        </javaClientGenerator>
-
-        <table schema="wxshop" tableName="USER" domainObjectName="User" >
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
-            <columnOverride column="AVATAR_URL" property="avatarUrl" />
-            <columnOverride column="CREATED_AT" jdbcType="timestamp" />
-            <columnOverride column="UPDATED_AT" jdbcType="timestamp" />
-        </table>
-
-    </context>
-</generatorConfiguration>
+```shell script
+./mvnw install -DskipTests
+./mvnw flyway:migrate -pl wxshop-main
+./mvnw flyway:migrate -pl wxshop-order
 ```
+注意，如果你使用的是Windows，将所有的./mvnw换成./mvnw.cmd
 
-```xml
-Failed to execute goal org.mybatis.generator:mybatis-generator-maven-plugin:1.4.0:generate (default-cli) on project wxshop:
-Execution default-cli of goal org.mybatis.generator:mybatis-generator-maven-plugin:1.4.0:generate failed: 
-Exception getting JDBC Driver: com.mysql.cj.jdbc.Driver -> [Help 1]
-```
-因为插件中并没有mysql的依赖，pom中的依赖是给项目用的，并没有起作用到插件中，所以要单独给mybatis-generator添加mysql依赖
-```xml
-        <plugin>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-maven-plugin</artifactId>
-            <version>1.4.0</version>
-              <dependencies>
-                 <dependency>
-                     <groupId>mysql</groupId>
-                     <artifactId>mysql-connector-java</artifactId>
-                     <version>8.0.21</version>
-                 </dependency>
-              </dependencies>
-        </plugin>
-```
-命令: mvn mybatis-generator:generate
+启动应用本身
+
+在第一个窗口中运行 java -jar wxshop-order/target/wxshop-order-0.0.1-SNAPSHOT.jar
+
+在第二个窗口中运行 java -jar wxshop-main/target/wxshop-main-0.0.1-SNAPSHOT.jar
+
+open http://localhost:8080
+
+数据库/Redis/ZooKeeper配置
+如果你的 mysql/redis/zookeeper 服务器没有在 localhost 启动，而是在其他 ip 启动，那么你需要全局替换 localhost 为对应的 ip
+
+注意，只替换localhost，不要替换127.0.0.1！！！
