@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.*;
 public class OrderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     @Reference(version = "${wxshop.orderservice.version}")
-    private OrderRpcService orderRpcService;
+    OrderRpcService orderRpcService;
 
     private UserMapper userMapper;
     private GoodsService goodsService;
