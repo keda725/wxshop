@@ -45,8 +45,8 @@ public class ShoppingCartController {
      * "description": "我的苹果专卖店",
      * "imgUrl": "https://img.url",
      * "ownerUserId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * "goods": [
      * {
@@ -58,8 +58,8 @@ public class ShoppingCartController {
      * "address": "XXX",
      * "price": 500,
      * "number": 10,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * {
      * ...
@@ -118,8 +118,8 @@ public class ShoppingCartController {
      * "description": "我的苹果专卖店",
      * "imgUrl": "https://img.url",
      * "ownerUserId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * "goods": [
      * {
@@ -130,8 +130,8 @@ public class ShoppingCartController {
      * "imgUrl": "https://img.url",
      * "price": 500,
      * "number": 10,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * {
      * ...
@@ -212,8 +212,8 @@ public class ShoppingCartController {
      * "description": "我的苹果专卖店",
      * "imgUrl": "https://img.url",
      * "ownerUserId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * "goods": [
      * {
@@ -225,8 +225,8 @@ public class ShoppingCartController {
      * "address": "XXX",
      * "price": 500,
      * "number": 10,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * {
      * ...

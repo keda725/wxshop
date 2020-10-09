@@ -98,8 +98,8 @@ public class ShopController {
      * "description": "我的苹果专卖店",
      * "imgUrl": "https://img.url",
      * "ownerUserId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * }
      * }
      * @apiError 400 Bad Request 若用户的请求中包含错误
@@ -149,8 +149,8 @@ public class ShopController {
      * "description": "我的苹果专卖店",
      * "imgUrl": "https://img.url",
      * "ownerUserId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * }
      * }
      * @apiError 400 Bad Request 若用户的请求中包含错误
@@ -195,8 +195,8 @@ public class ShopController {
      *              "description": "我的苹果专卖店",
      *              "imgUrl": "https://img.url",
      *              "ownerUserId": 12345,
-     *              "createdAt": "2020-03-22T13:22:03Z",
-     *              "updatedAt": "2020-03-22T13:22:03Z"
+     *              "createdAt": "2020-08-22T13:22:03Z",
+     *              "updatedAt": "2020-08-22T13:22:03Z"
      *       }
      *     }
      *

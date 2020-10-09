@@ -49,8 +49,8 @@ public class GoodsController {
      * "price": 500,
      * "stock": 10,
      * "shopId": 12345,
-     * "createdAt": "2020-03-22T13:22:03Z",
-     * "updatedAt": "2020-03-22T13:22:03Z"
+     * "createdAt": "2020-08-22T13:22:03Z",
+     * "updatedAt": "2020-08-22T13:22:03Z"
      * },
      * {
      * ...
@@ -232,8 +232,8 @@ public class GoodsController {
      *              "imgUrl": "https://img.url",
      *              "price": 500,
      *              "stock": 10,
-     *              "createdAt": "2020-03-22T13:22:03Z",
-     *              "updatedAt": "2020-03-22T13:22:03Z"
+     *              "createdAt": "2020-08-22T13:22:03Z",
+     *              "updatedAt": "2020-08-22T13:22:03Z"
      *       }
      *     }
      *
